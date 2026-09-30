@@ -1,9 +1,5 @@
 <?php
 
-// ✧ ─────────── coordinates transform ────────────── ✧
-
-composer require antistatique/swisstopo
-
 // ✧ ─────────── diagram 1 ────────────── ✧
 
 // ♡ get total amount of cinemas in switzerland per year
@@ -59,17 +55,17 @@ foreach ($municipalities as $municipality) {
 $handle = fopen('../data/diagram2_coordinates.csv' , 'r');
 $header = array_map('trim', fgetcsv($handle , null , ',' , '"' , ''));
 
-$bfs_codes_and_coordinates_lv95 = [];
+$bfs_codes_and_coordinates = [];
 
 while (($row = fgetcsv($handle , null , ',' , '"' , '"')) !== false) {
     if ($row[0]==='') {
         continue;
     }
-    $bfs_codes_and_coordinates_lv95[]=array_combine($header, $row);
+    $bfs_codes_and_coordinates[]=array_combine($header, $row);
 }
 fclose($handle);
 
-print_r($bfs_codes_and_coordinates_lv95);
+print_r($bfs_codes_and_coordinates);
 
 // ♡ transform coordinates from lv95 format to WGS84
 
