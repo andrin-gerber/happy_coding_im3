@@ -1,0 +1,785 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+
+/* --------------------------------------------------
+   RESET
+-------------------------------------------------- */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Nova Flat", system-ui;
+    font-weight: 400;
+    font-style: normal;
+}
+
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+
+body {
+    overflow: hidden;
+    background: #000;
+    color: #fff;
+
+    font-family: "Share Tech Mono", monospace;
+}
+
+
+/* --------------------------------------------------
+   VIEWPORT / SLIDER BASIS
+-------------------------------------------------- */
+
+.viewport {
+    position: relative;
+
+    width: 100vw;
+    height: 100vh;
+
+    overflow: hidden;
+    background: #000;
+}
+
+
+/* Beide Seiten liegen nebeneinander. */
+.slides {
+    display: flex;
+
+    width: 100%;
+    height: 100%;
+
+    transform: translate3d(0, 0, 0);
+
+    transition: transform 1.1s cubic-bezier(
+            0.77,
+            0,
+            0.18,
+            1
+    );
+}
+
+.slide {
+    position: relative;
+
+    /* Jede Seite nimmt genau eine Viewportbreite ein. */
+    flex: 0 0 100%;
+
+    width: 100%;
+    height: 100%;
+
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* Zweite Seite */
+.slide--chapter {
+    background: #181818;
+    color: #fff;
+}
+
+.chapter-content {
+    position: absolute;
+
+    left: 12%;
+    right: 12%;
+    top: 28%;
+}
+
+.chapter-number {
+    margin-bottom: 2rem;
+
+    color: #999;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+.chapter-content h2 {
+    font-size: clamp(2.2rem, 5.5vw, 6rem);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.05em;
+}
+
+.chapter-description {
+    max-width: 34rem;
+    margin-top: 2rem;
+
+    color: #bdbdbd;
+    font-size: clamp(1rem, 1.4vw, 1.25rem);
+    line-height: 1.6;
+}
+
+/* Navigation */
+.slide-navigation {
+    position: absolute;
+
+    left: 6vw;
+    right: 6vw;
+    bottom: 5vh;
+
+    z-index: 20;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.slide-navigation button {
+    padding: 0.75rem 1rem;
+
+    border: 1px solid #555;
+    background: #111;
+    color: #fff;
+
+    font: inherit;
+    cursor: pointer;
+
+    transition:
+            background 0.2s ease,
+            opacity 0.2s ease;
+}
+
+.slide-navigation button:hover:not(:disabled) {
+    background: #333;
+}
+
+.slide-navigation button:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+.slide-navigation button:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 5px;
+}
+
+#slideCounter {
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+.slide--chart {
+    background: #181818;
+    color: #ffffffff;
+}
+
+/* Stabile Höhe auch auf mobilen Geräten */
+.viewport {
+    height: 100vh;
+    height: 100dvh;
+}
+
+/* Bewegungen auf Wunsch deaktivieren */
+@media (prefers-reduced-motion: reduce) {
+    .slides {
+        transition: none;
+    }
+
+    .parallax-layer {
+        transform: none !important;
+    }
+}
+
+
+/* --------------------------------------------------
+   ERSTER SLIDE
+-------------------------------------------------- */
+
+.slide--intro {
+    background: #000;
+}
+
+
+/* --------------------------------------------------
+   FOTO
+-------------------------------------------------- */
+
+.kino-image {
+    position: absolute;
+
+    /*
+        Orientierung am Mockup:
+        etwas Abstand links,
+        oben bündig,
+        ca. 60% der Bildschirmbreite.
+    */
+
+    left: 6.5vw;
+    top: -2vh;
+
+    width: 59vw;
+    height: 78vh;
+
+    z-index: 1;
+
+    /*
+        Etwas größer als nötig,
+        damit beim Parallax keine
+        unschönen Ränder erscheinen.
+    */
+
+    overflow: hidden;
+
+    will-change: transform;
+}
+
+
+.kino-image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    /*
+        Damit ungefähr der gleiche
+        Bildausschnitt wie im Mockup entsteht.
+    */
+
+    object-position: 48% center;
+
+    /*
+        Verhindert schwarze Lücken,
+        wenn sich das Bild bewegt.
+    */
+
+    transform: scale(1.08);
+
+    filter: grayscale(100%);
+
+    user-select: none;
+    pointer-events: none;
+}
+
+
+/* --------------------------------------------------
+   TITEL
+-------------------------------------------------- */
+
+.title {
+    position: absolute;
+
+    /*
+        Der Titel liegt bewusst über dem
+        rechten unteren Teil des Fotos.
+    */
+
+    left: 46vw;
+    top: 60vh;
+
+    z-index: 5;
+
+    font-size: clamp(
+            3.7rem,
+            6vw,
+            6.8rem
+    );
+
+    line-height: 0.92;
+
+    font-weight: 400;
+
+    letter-spacing: -0.06em;
+
+    color: #fff;
+
+    white-space: nowrap;
+
+    will-change: transform;
+
+    pointer-events: none;
+    user-select: none;
+}
+
+
+.title-line {
+    display: block;
+}
+
+
+/*
+    zweite Zeile leicht nach rechts,
+    ähnlich wie im Mockup
+*/
+
+.title-line--second {
+    margin-left: 0.25em;
+    margin-top: 0.1em;
+}
+
+
+/* --------------------------------------------------
+   DAS GROSSE T
+-------------------------------------------------- */
+
+.large-t {
+    position: relative;
+
+    display: inline-block;
+
+    /*
+        deutlich größer als restlicher Text
+    */
+
+    font-size: 1.7em;
+
+    /*
+        dunkles Grau wie im Mockup
+    */
+
+    color: #333;
+
+    /*
+        Die Baseline wird etwas angepasst,
+        damit der Buchstabe nach oben und
+        unten herausragt.
+    */
+
+    line-height: 0;
+
+    top: 0.06em;
+
+    margin-left: -0.06em;
+    margin-right: -0.07em;
+
+    z-index: -1;
+}
+
+
+/* --------------------------------------------------
+   PARALLAX
+-------------------------------------------------- */
+
+.parallax-layer {
+    transform: translate3d(0, 0, 0);
+
+    will-change: transform;
+}
+
+
+/* --------------------------------------------------
+   RESPONSIVE
+-------------------------------------------------- */
+
+@media (max-width: 900px) {
+
+    .kino-image {
+        left: 4vw;
+        top: 0;
+
+        width: 78vw;
+        height: 68vh;
+    }
+
+
+    .title {
+        left: 26vw;
+        top: 59vh;
+
+        font-size: clamp(
+                3rem,
+                9vw,
+                5.5rem
+        );
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .kino-image {
+        left: 0;
+        top: 0;
+
+        width: 92vw;
+        height: 62vh;
+    }
+
+
+    .title {
+        left: 8vw;
+        top: 60vh;
+
+        font-size: clamp(
+                2.8rem,
+                12vw,
+                4.7rem
+        );
+
+        letter-spacing: -0.08em;
+    }
+
+
+    .title-line--second {
+        margin-left: 0.35em;
+    }
+
+
+    .large-t {
+        font-size: 1.55em;
+    }
+
+}
+
+
+/*
+   Bei Touch-Geräten gibt es keinen
+   echten Cursor-Parallax.
+*/
+
+@media (pointer: coarse) {
+
+    .parallax-layer {
+        transform: none !important;
+    }
+
+}
+
+
+
+
+.chart-content {
+    position: absolute;
+    inset: 8% 10% 18%;
+
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.chart-content .chapter-number {
+    margin-bottom: 1rem;
+}
+
+.chart-content h2 {
+    font-size: clamp(2rem, 4vw, 4.5rem);
+    font-weight: 400;
+    line-height: 1.1;
+}
+
+.chart-intro {
+    margin-top: 1rem;
+    color: #bbb;
+}
+
+.chart-container {
+    position: relative;
+
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    margin-top: 2rem;
+}
+
+.chart-source {
+    margin-top: 1rem;
+    color: #999;
+    font-size: 0.8rem;
+}
+
+@media (max-width: 600px) {
+    .chart-content {
+        inset: 6% 6% 20%;
+    }
+
+    .chart-container {
+        margin-top: 1rem;
+    }
+}
+
+.slide--map {
+    background: #181818;
+    color: #fff;
+}
+
+.map-content {
+    position: absolute;
+    inset: 6% 10% 18%;
+
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.map-content .chapter-number {
+    margin-bottom: 1rem;
+}
+
+.map-content h2 {
+    font-size: clamp(1.8rem, 3.5vw, 4rem);
+    font-weight: 400;
+    line-height: 1.1;
+}
+
+#swissMap {
+    position: relative;
+    z-index: 0;
+
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    margin-top: 1rem;
+
+    background: transparent;
+}
+
+.year-control {
+    margin-top: 1rem;
+}
+
+.year-control label {
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+#mapYear {
+    display: block;
+    width: 100%;
+    accent-color: #fff;
+    cursor: pointer;
+}
+
+#mapStatus {
+    margin-top: 0.75rem;
+    color: #aaa;
+    font-size: 0.8rem;
+}
+
+@media (max-width: 600px) {
+    .map-content {
+        inset: 5% 6% 20%;
+    }
+}
+
+
+
+/* SLIDE 2: KINOGESCHICHTE */
+
+.slide--history {
+    position: relative;
+    background: #000;
+    color: #fff;
+}
+
+.history-layout {
+    position: absolute;
+    inset: 15% 4% 25% 0;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(1.5rem, 3.3vw, 4rem);
+}
+
+.history-images {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(0.75rem, 1.5vw, 1.5rem);
+
+    height: 100%;
+    min-height: 0;
+}
+
+.history-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+
+    object-fit: cover;
+    object-position: center;
+}
+
+.history-image--old {
+    filter: grayscale(1);
+}
+
+.history-copy {
+    min-width: 0;
+    font-family: inherit;
+}
+
+.history-copy h2 {
+    margin: 0 0 clamp(1.25rem, 2.2vw, 2.5rem);
+
+    font-size: clamp(1.8rem, 3.5vw, 3.8rem);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: 0.025em;
+}
+
+.history-copy p {
+    margin: 0;
+
+    font-size: clamp(0.95rem, 1.45vw, 1.3rem);
+    line-height: 1.3;
+    letter-spacing: 0.025em;
+
+    text-align: justify;
+    hyphens: auto;
+}
+
+/* Auf schmalen Bildschirmen steht der Text unter den Bildern. */
+@media (max-width: 700px) {
+    .history-layout {
+        inset: 5% 6% 18%;
+
+        grid-template-columns: minmax(0, 1fr);
+        align-content: start;
+        gap: 1.5rem;
+
+        overflow-y: auto;
+    }
+
+    .history-images {
+        height: clamp(12rem, 34vh, 22rem);
+    }
+
+    .history-copy h2 {
+        margin-bottom: 1rem;
+        font-size: clamp(1.7rem, 6vw, 2.5rem);
+    }
+
+    .history-copy p {
+        font-size: 1rem;
+        line-height: 1.45;
+        text-align: left;
+    }
+}
+
+
+/* SLIDES 3 + 4: VISUALISIERUNG LINKS, TEXT RECHTS */
+
+.slide--chart,
+.slide--map {
+    position: relative;
+    background: #000;
+    color: #fff;
+}
+
+.split-layout {
+    position: absolute;
+    inset: 12% 6% 20%;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 6rem);
+}
+
+/* Linke Spalte */
+.split-visual {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+    min-height: 0;
+}
+
+.split-visual .chart-container {
+    position: relative;
+    flex: 1;
+
+    width: 100%;
+    min-height: 0;
+    margin: 0;
+}
+
+.split-visual #swissMap {
+    position: relative;
+    z-index: 0;
+    flex: 1;
+
+    width: 100%;
+    min-height: 0;
+    margin: 0;
+
+    background: transparent;
+}
+
+.split-visual .chart-source,
+.split-visual #mapStatus {
+    flex-shrink: 0;
+    margin: 0.75rem 0 0;
+
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: #aaa;
+}
+
+/* Jahresregler unter der Karte */
+.split-visual .year-control {
+    flex-shrink: 0;
+    margin-top: 1rem;
+}
+
+.split-visual .year-control label {
+    display: block;
+    margin-bottom: 0.6rem;
+}
+
+.split-visual #mapYear {
+    display: block;
+    width: 100%;
+    margin: 0;
+
+    accent-color: #fff;
+    cursor: pointer;
+}
+
+/* Rechte Spalte */
+.split-copy {
+    align-self: center;
+    min-width: 0;
+}
+
+.split-copy .chapter-number {
+    margin: 0 0 1rem;
+    color: #aaa;
+    font-size: 0.85rem;
+}
+
+.split-copy h2 {
+    margin: 0 0 clamp(1.25rem, 2.2vw, 2.5rem);
+
+    font-size: clamp(1.8rem, 3.3vw, 3.8rem);
+    font-weight: 400;
+    line-height: 1.15;
+}
+
+.split-copy > p:not(.chapter-number) {
+    margin: 0;
+
+    font-size: clamp(1rem, 1.3vw, 1.2rem);
+    line-height: 1.5;
+    color: #ddd;
+}
+
+/* Mobil: Visualisierung oben, Erklärung darunter */
+@media (max-width: 700px) {
+    .split-layout {
+        inset: 5% 6% 18%;
+
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto auto;
+        align-content: start;
+        gap: 1.75rem;
+
+        overflow-y: auto;
+    }
+
+    .split-visual {
+        height: clamp(18rem, 45vh, 30rem);
+    }
+
+    .split-copy h2 {
+        margin-bottom: 1rem;
+        font-size: clamp(1.7rem, 6vw, 2.5rem);
+    }
+}
