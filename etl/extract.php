@@ -73,18 +73,24 @@ fclose($handle);
 
 // ♡ combine coordinates with municipalities
 
-foreach ($cinema_mun_totals_labelled as $municipilaity_bfs => $municipality){
-    foreach ($bfs_codes_and_coordinates as $bfs_and_coordinate){
-        if ($municipalities_bfs === $bfs_and_coordinate['GDENR']){
+$municipality_names = $data2['dataset']['dimension']['Kanton (-) / Gemeinde (......)']['category']['label'];
 
-            echo "adliswil gfunde";
-        }
-        else{
-            echo "nüt gfunde";
-            print_r($municipalities_bfs);
+$data_diagram2 = [];
+
+foreach ($cinema_mun_totals_labelled as $bfs => $cinemas_per_year) {
+    foreach ($bfs_codes_and_coordinates as $bfs_and_coordinate) {
+        if ((int)$bfs === (int)$bfs_and_coordinate['GDENR']) {
+            $data_diagram2[$bfs] = [
+                'name'        => $municipality_names[$bfs],
+                'coordinates' => $bfs_and_coordinate,
+                'cinemas'     => $cinemas_per_year,
+            ];
+            break; // Treffer gefunden, innere Schleife beenden
         }
     }
 }
+
+print_r($data_diagram2);
 
 
 
