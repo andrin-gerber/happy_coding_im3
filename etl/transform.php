@@ -71,11 +71,33 @@ foreach ($data_diagram2 as $bfs => $municipality) {
 
 //var_dump($diagram1);
 
+// ✧ ─────────── diagram 3 ────────────── ✧
 
+// ♡ halls per municipality (only 1966 and 2025)
+
+$halls_raw = $extracted['halls_per_municipality'];
+$diagram3  = [];
+
+foreach ($halls_raw as $gdenr => $values) {
+
+    // Falls ein Wert fehlt → null
+    $h1966 = $values[1966] ?? null;
+    $h2025 = $values[2025] ?? null;
+
+    $diagram3[$gdenr] = [
+        'id'         => $gdenr,
+        'halls_1966' => $h1966,
+        'halls_2025' => $h2025,
+    ];
+}
+
+
+print_r($diagram2);
 
 return [
     'diagram1' => $diagram1,
     'diagram2' => $diagram2,
+    'diagram3' => $diagram3,
     'audit'    => $audit,
 ];
 
