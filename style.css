@@ -333,7 +333,7 @@ body {
         dunkles Grau wie im Mockup
     */
 
-    color: #333;
+    color: darkred;
 
     /*
         Die Baseline wird etwas angepasst,
@@ -882,7 +882,7 @@ body {
 
 /* ---------- HINTEN ---------- */
 
-./* =========================================
+/* =========================================
    FREIE VERTEILUNG DER KINOBILDER
    ========================================= */
 
@@ -898,7 +898,7 @@ body {
 .cinema-photo--2 {
     --x: 24%;
     --y: 4%;
-    --w: 26vw;
+    --w: 28vw;
     --rotation: 5deg;
 }
 
