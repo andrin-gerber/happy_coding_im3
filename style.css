@@ -970,23 +970,6 @@ body {
    TITEL
    ========================================= */
 
-.slide--intro .title {
-    position: absolute;
-
-    left: 50%;
-    top: 50%;
-
-    z-index: 100;
-
-    margin: 0;
-
-    transform: translate(-50%, -50%);
-
-    text-align: center;
-
-    pointer-events: none;
-}
-
 
 /*
    Falls du bereits eigenes Titel-CSS hast,
