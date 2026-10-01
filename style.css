@@ -882,86 +882,97 @@ body {
 
 /* ---------- HINTEN ---------- */
 
+./* =========================================
+   FREIE VERTEILUNG DER KINOBILDER
+   ========================================= */
+
+    /* weit hinten */
 .cinema-photo--1 {
-    --x: 3%;
-    --y: 8%;
-    --w: 17vw;
+    --x: 4%;
+    --y: 9%;
+    --w: 18vw;
     --rotation: -8deg;
 }
 
+/* weit vorne */
 .cinema-photo--2 {
-    --x: 31%;
+    --x: 24%;
     --y: 4%;
-    --w: 15vw;
+    --w: 26vw;
     --rotation: 5deg;
 }
 
+/* hinten */
 .cinema-photo--3 {
-    --x: 57%;
-    --y: 8%;
-    --w: 17vw;
+    --x: 58%;
+    --y: 11%;
+    --w: 16vw;
     --rotation: -4deg;
 }
 
+/* vorne */
 .cinema-photo--4 {
-    --x: 80%;
-    --y: 6%;
-    --w: 18vw;
+    --x: 78%;
+    --y: -4%;
+    --w: 28vw;
     --rotation: 7deg;
 }
 
 
-/* ---------- MITTE ---------- */
-
+/* vorne links */
 .cinema-photo--5 {
-    --x: 8%;
-    --y: 47%;
-    --w: 21vw;
+    --x: -7%;
+    --y: 35%;
+    --w: 30vw;
     --rotation: 6deg;
 }
 
+/* eher hinten in der Mitte */
 .cinema-photo--6 {
-    --x: 29%;
-    --y: 58%;
-    --w: 19vw;
+    --x: 34%;
+    --y: 29%;
+    --w: 18vw;
     --rotation: -6deg;
 }
 
+/* ziemlich weit vorne */
 .cinema-photo--7 {
-    --x: 62%;
-    --y: 38%;
-    --w: 22vw;
+    --x: 64%;
+    --y: 30%;
+    --w: 27vw;
     --rotation: 4deg;
 }
 
+/* hinten rechts */
 .cinema-photo--8 {
-    --x: 77%;
-    --y: 51%;
-    --w: 21vw;
+    --x: 84%;
+    --y: 39%;
+    --w: 17vw;
     --rotation: -8deg;
 }
 
 
-/* ---------- VORNE ---------- */
-
+/* hinten unten */
 .cinema-photo--9 {
-    --x: -6%;
-    --y: 67%;
-    --w: 29vw;
+    --x: 10%;
+    --y: 70%;
+    --w: 20vw;
     --rotation: -5deg;
 }
 
+/* weit vorne unten */
 .cinema-photo--10 {
-    --x: 45%;
-    --y: 70%;
-    --w: 27vw;
+    --x: 40%;
+    --y: 68%;
+    --w: 31vw;
     --rotation: 6deg;
 }
 
+/* ganz vorne rechts unten */
 .cinema-photo--11 {
-    --x: 81%;
-    --y: 70%;
-    --w: 28vw;
+    --x: 74%;
+    --y: 65%;
+    --w: 34vw;
     --rotation: -6deg;
 }
 
