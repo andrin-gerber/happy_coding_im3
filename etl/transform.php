@@ -68,9 +68,13 @@ foreach ($data_diagram2 as $bfs => $municipality) {
 }
 
 //var_dump($diagram1);
+print_r($diagram2);
+print_r($diagram1);
+
 
 return [
     'diagram1' => $diagram1,
     'diagram2' => $diagram2,
     'audit'    => $audit,
 ];
+
