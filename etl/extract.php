@@ -18,7 +18,7 @@ else {
     print_r("ACHTUNG: FEHLENDE DATEN");
 }
 
-//print_r($year);
+//print_r($years);
 //print_r($cinema_ch_total);
 
 $cinemas_per_year = array_combine($years, $cinema_ch_totals);
@@ -77,20 +77,23 @@ $municipality_names = $data2['dataset']['dimension']['Kanton (-) / Gemeinde (...
 
 $data_diagram2 = [];
 
-foreach ($cinema_mun_totals_labelled as $bfs => $cinemas_per_year) {
+foreach ($cinema_mun_totals_labelled as $bfs => $cinemas_of_municipality) {
     foreach ($bfs_codes_and_coordinates as $bfs_and_coordinate) {
         if ((int)$bfs === (int)$bfs_and_coordinate['GDENR']) {
             $data_diagram2[$bfs] = [
                 'name'        => $municipality_names[$bfs],
                 'coordinates' => $bfs_and_coordinate,
-                'cinemas'     => $cinemas_per_year,
+                'cinemas'     => $cinemas_of_municipality,
             ];
             break; // Treffer gefunden, innere Schleife beenden
         }
     }
 }
 
-print_r($data_diagram2);
+return [
+    'cinemas_per_year' => $cinemas_per_year,
+    'data_diagram2'    => $data_diagram2,
+];
 
 
 
