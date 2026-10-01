@@ -34,21 +34,24 @@ $json2 = file_get_contents('../data/diagram2.json');
 
 $data2 = json_decode($json2, true);
 
-$municipalities = $data2['dataset']['dimension']['Kanton (-) / Gemeinde (......)']['category']['label'];
+$municipalities = $data2['dataset']['dimension']['Kanton (-) / Gemeinde (......)']['category']['index'];
+ksort($municipalities);
+//Weil der BFS Code in den Keys und nicht im value gespeichert ist müssen wir nur die keys holen
+$municipalities_bfs = array_flip($municipalities);
+
 
 $cinema_mun_totals = $data2['dataset']['value'];
 
 $cinema_mun_totals_labelled = [];
 $i = 0;
 
-foreach ($municipalities as $municipality) {
+foreach ($municipalities_bfs as $municipality) {
     foreach ($years as $year) {
         $cinema_mun_totals_labelled[$municipality][$year]=$cinema_mun_totals[$i];
         $i++;
     }
 }
 
-//print_r($cinema_mun_totals_labelled);
 
 // ♡ get coordinates (format lv95) of municipalities via bfs code
 
@@ -65,9 +68,23 @@ while (($row = fgetcsv($handle , null , ',' , '"' , '"')) !== false) {
 }
 fclose($handle);
 
-print_r($bfs_codes_and_coordinates);
 
-// ♡ transform coordinates from lv95 format to WGS84
+
+
+// ♡ combine coordinates with municipalities
+
+foreach ($cinema_mun_totals_labelled as $municipilaity_bfs => $municipality){
+    foreach ($bfs_codes_and_coordinates as $bfs_and_coordinate){
+        if ($municipalities_bfs === $bfs_and_coordinate['GDENR']){
+
+            echo "adliswil gfunde";
+        }
+        else{
+            echo "nüt gfunde";
+            print_r($municipalities_bfs);
+        }
+    }
+}
 
 
 
