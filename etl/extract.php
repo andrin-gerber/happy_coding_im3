@@ -69,8 +69,6 @@ while (($row = fgetcsv($handle , null , ',' , '"' , '"')) !== false) {
 fclose($handle);
 
 
-
-
 // ♡ combine coordinates with municipalities
 
 $municipality_names = $data2['dataset']['dimension']['Kanton (-) / Gemeinde (......)']['category']['label'];
@@ -95,5 +93,33 @@ return [
     'data_diagram2'    => $data_diagram2,
 ];
 
+// ✧ ─────────── diagram 3 ────────────── ✧
 
+// ♡ get total amount of halls per municipality in 1966 and 2025
 
+$json3 = file_get_contents('../data/diagram3.json');
+
+$data3 = json_decode($json3, true);
+
+$year3 = $data3['dataset']['dimension']['Jahr']['category']['label'];
+
+$halls = $data3['dataset']['value'];
+
+$data_diagram3 = [];
+
+$j1 = 0;
+$j2 = 0;
+foreach ($municipalities as $municipality) {
+    foreach ($year3 as $year) {
+        $data_diagram3[$municipality] = [
+            '1966' => $halls,
+            '2025' => $halls,
+        ];
+        $j1++;
+        $j2++;
+        $j1++;
+        $j2++;
+    }
+}
+
+print_r($data_diagram3);
