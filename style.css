@@ -783,3 +783,276 @@ body {
         font-size: clamp(1.7rem, 6vw, 2.5rem);
     }
 }
+
+
+/* =========================================
+   SLIDE 1
+   ========================================= */
+
+.slide--intro {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+
+    overflow: hidden;
+    isolation: isolate;
+
+    background: #111;
+}
+
+
+/* =========================================
+   BILDER-COLLAGE
+   ========================================= */
+
+.cinema-scene {
+    position: absolute;
+    inset: 0;
+
+    z-index: 1;
+
+    pointer-events: none;
+}
+
+
+/* Allgemeine Eigenschaften aller Bilder */
+
+.cinema-photo {
+    position: absolute;
+
+    left: var(--x);
+    top: var(--y);
+
+    width: var(--w);
+
+    --depth: 0.5;
+
+    will-change: transform;
+}
+
+
+/* Das eigentliche Bild */
+
+.cinema-photo img {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    aspect-ratio: 4 / 3;
+
+    object-fit: cover;
+
+    /*
+       Rotation und Größe hängen von der Tiefe ab.
+    */
+
+    transform:
+            rotate(var(--rotation, 0deg))
+            scale(calc(0.82 + var(--depth) * 0.22));
+
+    transform-origin: center;
+
+
+    /*
+       Bilder hinten sind etwas dunkler und unschärfer.
+    */
+
+    filter:
+            blur(calc((1 - var(--depth)) * 1.4px))
+            brightness(calc(0.65 + var(--depth) * 0.35));
+
+
+    /*
+       Bilder hinten sind etwas transparenter.
+    */
+
+    opacity: calc(0.55 + var(--depth) * 0.45);
+
+
+    box-shadow:
+            0 18px 45px rgba(0, 0, 0, 0.4);
+}
+
+
+/* =========================================
+   POSITIONEN DER EINZELNEN BILDER
+   ========================================= */
+
+
+/* ---------- HINTEN ---------- */
+
+.cinema-photo--1 {
+    --x: 3%;
+    --y: 8%;
+    --w: 17vw;
+    --rotation: -8deg;
+}
+
+.cinema-photo--2 {
+    --x: 31%;
+    --y: 4%;
+    --w: 15vw;
+    --rotation: 5deg;
+}
+
+.cinema-photo--3 {
+    --x: 57%;
+    --y: 8%;
+    --w: 17vw;
+    --rotation: -4deg;
+}
+
+.cinema-photo--4 {
+    --x: 80%;
+    --y: 6%;
+    --w: 18vw;
+    --rotation: 7deg;
+}
+
+
+/* ---------- MITTE ---------- */
+
+.cinema-photo--5 {
+    --x: 8%;
+    --y: 47%;
+    --w: 21vw;
+    --rotation: 6deg;
+}
+
+.cinema-photo--6 {
+    --x: 29%;
+    --y: 58%;
+    --w: 19vw;
+    --rotation: -6deg;
+}
+
+.cinema-photo--7 {
+    --x: 62%;
+    --y: 38%;
+    --w: 22vw;
+    --rotation: 4deg;
+}
+
+.cinema-photo--8 {
+    --x: 77%;
+    --y: 51%;
+    --w: 21vw;
+    --rotation: -8deg;
+}
+
+
+/* ---------- VORNE ---------- */
+
+.cinema-photo--9 {
+    --x: -6%;
+    --y: 67%;
+    --w: 29vw;
+    --rotation: -5deg;
+}
+
+.cinema-photo--10 {
+    --x: 45%;
+    --y: 70%;
+    --w: 27vw;
+    --rotation: 6deg;
+}
+
+.cinema-photo--11 {
+    --x: 81%;
+    --y: 70%;
+    --w: 28vw;
+    --rotation: -6deg;
+}
+
+
+/* =========================================
+   TITEL
+   ========================================= */
+
+.slide--intro .title {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    z-index: 100;
+
+    margin: 0;
+
+    transform: translate(-50%, -50%);
+
+    text-align: center;
+
+    pointer-events: none;
+}
+
+
+/*
+   Falls du bereits eigenes Titel-CSS hast,
+   kannst du diesen Teil weglassen.
+*/
+
+.slide--intro .title-line {
+    display: block;
+}
+
+.slide--intro .title-line--second {
+    margin-top: 0.1em;
+}
+
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 900px) {
+
+    .cinema-photo--1 {
+        --w: 25vw;
+    }
+
+    .cinema-photo--2 {
+        --w: 23vw;
+    }
+
+    .cinema-photo--3 {
+        --w: 24vw;
+    }
+
+    .cinema-photo--4 {
+        --w: 24vw;
+    }
+
+    .cinema-photo--5 {
+        --w: 29vw;
+    }
+
+    .cinema-photo--6 {
+        --w: 27vw;
+    }
+
+    .cinema-photo--7 {
+        --w: 28vw;
+    }
+
+    .cinema-photo--8 {
+        --w: 28vw;
+    }
+
+    .cinema-photo--9,
+    .cinema-photo--10,
+    .cinema-photo--11 {
+        --w: 35vw;
+    }
+}
+
+
+/* Kein Parallax bei reduzierter Bewegung */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .parallax-layer {
+        transform: none !important;
+    }
+}

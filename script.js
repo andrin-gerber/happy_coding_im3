@@ -75,14 +75,80 @@ window.addEventListener("keydown", (event) => {
     }
 });
 
-/* ----------------------------------
-   MAUS-PARALLAX
----------------------------------- */
+/* =========================================
+   PARALLAX
+   ========================================= */
 
-const pointerQuery = window.matchMedia("(pointer: fine)");
+const layers = [
+    ...document.querySelectorAll(".parallax-layer")
+];
+
+const pointerQuery = window.matchMedia(
+    "(pointer: fine)"
+);
+
 const motionQuery = window.matchMedia(
     "(prefers-reduced-motion: reduce)"
 );
+
+
+/* -----------------------------------------
+   TIEFE DER BILDER VORBEREITEN
+   ----------------------------------------- */
+
+layers.forEach((layer) => {
+
+    const depth = Number(
+        layer.dataset.depth
+    );
+
+    /*
+       Elemente ohne data-depth,
+       zum Beispiel der Titel,
+       werden hier übersprungen.
+    */
+
+    if (!Number.isFinite(depth)) {
+        return;
+    }
+
+
+    /*
+       Tiefe auf 0 bis 1 begrenzen.
+    */
+
+    const normalizedDepth = Math.max(
+        0,
+        Math.min(1, depth)
+    );
+
+
+    /*
+       Tiefe an CSS weitergeben.
+    */
+
+    layer.style.setProperty(
+        "--depth",
+        normalizedDepth
+    );
+
+
+    /*
+       Elemente mit hoher Tiefe liegen vorne.
+    */
+
+    layer.style.zIndex = String(
+        Math.round(
+            10 + normalizedDepth * 70
+        )
+    );
+
+});
+
+
+/* -----------------------------------------
+   PARALLAX VARIABLEN
+   ----------------------------------------- */
 
 let targetX = 0;
 let targetY = 0;
@@ -93,90 +159,322 @@ let currentY = 0;
 let animationFrame = null;
 let lastTime = null;
 
+
+/* -----------------------------------------
+   IST PARALLAX AKTIV?
+   ----------------------------------------- */
+
 function parallaxEnabled() {
-    return pointerQuery.matches && !motionQuery.matches;
+
+    return (
+        pointerQuery.matches &&
+        !motionQuery.matches
+    );
+
 }
+
+
+/* -----------------------------------------
+   ANIMATION STARTEN
+   ----------------------------------------- */
 
 function startAnimation() {
-    if (animationFrame === null && parallaxEnabled()) {
+
+    if (
+        animationFrame === null &&
+        parallaxEnabled()
+    ) {
+
         lastTime = null;
-        animationFrame = requestAnimationFrame(animateParallax);
+
+        animationFrame =
+            requestAnimationFrame(
+                animateParallax
+            );
     }
+
 }
 
-window.addEventListener("pointermove", (event) => {
-    if (!parallaxEnabled() || event.pointerType !== "mouse") return;
 
-    targetX = (event.clientX / window.innerWidth - 0.5) * 2;
-    targetY = (event.clientY / window.innerHeight - 0.5) * 2;
+/* -----------------------------------------
+   MAUSPOSITION
+   ----------------------------------------- */
 
-    startAnimation();
-});
+window.addEventListener(
+    "pointermove",
+    (event) => {
 
-// Beim Verlassen des Fensters zurück zur Mitte.
+        if (
+            !parallaxEnabled() ||
+            event.pointerType !== "mouse"
+        ) {
+            return;
+        }
+
+
+        /*
+           Werte von -1 bis +1 erzeugen.
+        */
+
+        targetX =
+            (
+                event.clientX /
+                window.innerWidth -
+                0.5
+            ) * 2;
+
+
+        targetY =
+            (
+                event.clientY /
+                window.innerHeight -
+                0.5
+            ) * 2;
+
+
+        startAnimation();
+    }
+);
+
+
+/* -----------------------------------------
+   MAUS VERLÄSST DAS FENSTER
+   ----------------------------------------- */
+
 function resetTarget() {
+
     targetX = 0;
     targetY = 0;
+
     startAnimation();
 }
 
-document.documentElement.addEventListener("pointerleave", resetTarget);
-window.addEventListener("blur", resetTarget);
+
+document.documentElement.addEventListener(
+    "pointerleave",
+    resetTarget
+);
+
+window.addEventListener(
+    "blur",
+    resetTarget
+);
+
+
+/* -----------------------------------------
+   EIGENTLICHE ANIMATION
+   ----------------------------------------- */
 
 function animateParallax(time) {
-    const delta = lastTime === null
-        ? 16.67
-        : Math.min(time - lastTime, 50);
+
+    const delta =
+        lastTime === null
+            ? 16.67
+            : Math.min(
+                time - lastTime,
+                50
+            );
+
 
     lastTime = time;
 
-    // Gleiche Glättung bei verschiedenen Bildschirmfrequenzen.
-    const easing = 1 - Math.pow(1 - 0.055, delta / 16.67);
 
-    currentX += (targetX - currentX) * easing;
-    currentY += (targetY - currentY) * easing;
+    /*
+       Sanfte Bewegung.
+    */
+
+    const easing =
+        1 -
+        Math.pow(
+            1 - 0.055,
+            delta / 16.67
+        );
+
+
+    currentX +=
+        (targetX - currentX) *
+        easing;
+
+
+    currentY +=
+        (targetY - currentY) *
+        easing;
+
+
+    /*
+       Prüfen, ob die Bewegung fertig ist.
+    */
 
     const settled =
-        Math.abs(targetX - currentX) < 0.001 &&
-        Math.abs(targetY - currentY) < 0.001;
+        Math.abs(
+            targetX - currentX
+        ) < 0.001
+        &&
+        Math.abs(
+            targetY - currentY
+        ) < 0.001;
+
 
     if (settled) {
+
         currentX = targetX;
         currentY = targetY;
+
     }
 
-    layers.forEach((layer) => {
-        const speedX = Number(layer.dataset.speedX) || 0;
-        const speedY = Number(layer.dataset.speedY) || 0;
 
-        layer.style.transform = `translate3d(
-            ${currentX * speedX}px,
-            ${currentY * speedY}px,
-            0
-        )`;
+    /* -------------------------------------
+       ALLE PARALLAX ELEMENTE BEWEGEN
+       ------------------------------------- */
+
+    layers.forEach((layer) => {
+
+        const depth =
+            Number(
+                layer.dataset.depth
+            );
+
+
+        let speedX;
+        let speedY;
+
+
+        /*
+           BILDER
+
+           data-depth steuert automatisch
+           die Geschwindigkeit.
+        */
+
+        if (Number.isFinite(depth)) {
+
+            const normalizedDepth =
+                Math.max(
+                    0,
+                    Math.min(
+                        1,
+                        depth
+                    )
+                );
+
+
+            /*
+               Hinten:
+               kaum Bewegung.
+
+               Vorne:
+               starke Bewegung.
+            */
+
+            speedX =
+                6 +
+                normalizedDepth * 55;
+
+
+            speedY =
+                4 +
+                normalizedDepth * 38;
+
+
+        } else {
+
+            /*
+               TITEL oder andere Elemente.
+
+               Hier werden weiterhin
+               data-speed-x und
+               data-speed-y benutzt.
+            */
+
+            speedX =
+                Number(
+                    layer.dataset.speedX
+                ) || 0;
+
+
+            speedY =
+                Number(
+                    layer.dataset.speedY
+                ) || 0;
+
+        }
+
+
+        layer.style.transform =
+            `translate3d(
+                ${currentX * speedX}px,
+                ${currentY * speedY}px,
+                0
+            )`;
+
     });
 
-    // Nur animieren, solange sich tatsächlich etwas bewegt.
-    animationFrame = settled
-        ? null
-        : requestAnimationFrame(animateParallax);
+
+    /*
+       Nur weiter animieren,
+       solange Bewegung vorhanden ist.
+    */
+
+    animationFrame =
+        settled
+            ? null
+            : requestAnimationFrame(
+                animateParallax
+            );
+
 }
+
+
+/* -----------------------------------------
+   REDUCED MOTION
+   ----------------------------------------- */
 
 function updateMotionSettings() {
-    if (parallaxEnabled()) return;
 
-    cancelAnimationFrame(animationFrame);
+    if (parallaxEnabled()) {
+        return;
+    }
+
+
+    if (animationFrame !== null) {
+
+        cancelAnimationFrame(
+            animationFrame
+        );
+
+    }
+
+
     animationFrame = null;
 
-    targetX = targetY = currentX = currentY = 0;
+
+    targetX = 0;
+    targetY = 0;
+
+    currentX = 0;
+    currentY = 0;
+
 
     layers.forEach((layer) => {
-        layer.style.removeProperty("transform");
+
+        layer.style.removeProperty(
+            "transform"
+        );
+
     });
+
 }
 
-pointerQuery.addEventListener("change", updateMotionSettings);
-motionQuery.addEventListener("change", updateMotionSettings);
+
+pointerQuery.addEventListener(
+    "change",
+    updateMotionSettings
+);
+
+motionQuery.addEventListener(
+    "change",
+    updateMotionSettings
+);
 
 goToSlide(0);
 
