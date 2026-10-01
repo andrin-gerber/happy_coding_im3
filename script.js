@@ -8,6 +8,40 @@ const counter = document.querySelector("#slideCounter");
 
 let activeSlide = 0;
 
+/* =========================================
+   PARALLAX
+   ========================================= */
+
+const pointerQuery = window.matchMedia(
+    "(pointer: fine)"
+);
+
+const motionQuery = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+);
+
+layers.forEach((layer) => {
+    const depth = Number(layer.dataset.depth);
+
+    if (!Number.isFinite(depth)) {
+        return;
+    }
+
+    const normalizedDepth = Math.max(
+        0,
+        Math.min(1, depth)
+    );
+
+    layer.style.setProperty(
+        "--depth",
+        normalizedDepth
+    );
+
+    layer.style.zIndex = String(
+        Math.round(10 + normalizedDepth * 70)
+    );
+});
+
 /* ----------------------------------
    SEITENWECHSEL
 ---------------------------------- */
@@ -74,22 +108,6 @@ window.addEventListener("keydown", (event) => {
         goToSlide(activeSlide - 1);
     }
 });
-
-/* =========================================
-   PARALLAX
-   ========================================= */
-
-const layers = [
-    ...document.querySelectorAll(".parallax-layer")
-];
-
-const pointerQuery = window.matchMedia(
-    "(pointer: fine)"
-);
-
-const motionQuery = window.matchMedia(
-    "(prefers-reduced-motion: reduce)"
-);
 
 
 /* -----------------------------------------
