@@ -1,5 +1,7 @@
 <?php
 
+header('Content-Type: text/plain; charset=utf-8');
+
 // ✧ ─────────── diagram 1 ────────────── ✧
 
 // ♡ get total amount of cinemas in switzerland per year
@@ -33,6 +35,7 @@ $cinemas_per_year = array_combine($years, $cinema_ch_totals);
 $json2 = file_get_contents('../data/diagram2.json');
 
 $data2 = json_decode($json2, true);
+
 
 $municipalities = $data2['dataset']['dimension']['Kanton (-) / Gemeinde (......)']['category']['index'];
 ksort($municipalities);
@@ -88,10 +91,7 @@ foreach ($cinema_mun_totals_labelled as $bfs => $cinemas_of_municipality) {
     }
 }
 
-return [
-    'cinemas_per_year' => $cinemas_per_year,
-    'data_diagram2'    => $data_diagram2,
-];
+
 
 // ✧ ─────────── diagram 3 ────────────── ✧
 
@@ -101,25 +101,26 @@ $json3 = file_get_contents('../data/diagram3.json');
 
 $data3 = json_decode($json3, true);
 
+
 $year3 = $data3['dataset']['dimension']['Jahr']['category']['label'];
 
 $halls = $data3['dataset']['value'];
 
+
 $data_diagram3 = [];
 
 $j1 = 0;
-$j2 = 0;
+
 foreach ($municipalities as $municipality) {
     foreach ($year3 as $year) {
-        $data_diagram3[$municipality] = [
-            '1966' => $halls,
-            '2025' => $halls,
-        ];
+        $data_diagram3[$municipality][$year] = $halls[$j1];
         $j1++;
-        $j2++;
-        $j1++;
-        $j2++;
     }
 }
 
-print_r($data_diagram3);
+
+return [
+    'cinemas_per_year' => $cinemas_per_year,
+    'data_diagram2'    => $data_diagram2,
+    'data_diagram3'    => $data_diagram3
+];
