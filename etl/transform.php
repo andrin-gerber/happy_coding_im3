@@ -1,4 +1,6 @@
 <?php
+header('Content-Type: text/plain; charset=utf-8');
+
 
 $extracted = include __DIR__ . '/extract.php';
 
@@ -68,7 +70,7 @@ foreach ($data_diagram2 as $bfs => $municipality) {
 }
 
 //var_dump($diagram1);
-print_r($diagram2);
+
 print_r($diagram1);
 
 
