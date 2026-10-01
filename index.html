@@ -1,10 +1,293 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Test Happy Coding</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Kinosterben Schweiz</title>
+    <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nova+Flat&display=swap" rel="stylesheet">
 </head>
+
 <body>
-  <h1>Hallo Happy Coding</h1>
+
+<main class="viewport">
+
+    <div class="slides" id="slides">
+
+        <!-- SEITE 1 -->
+        <!-- SLIDE 1 -->
+        <section
+                class="slide slide--intro"
+                aria-label="Kinosterben Schweiz"
+        >
+            <div class="cinema-scene" aria-hidden="true">
+
+                <!-- HINTERE EBENE -->
+                <div
+                        class="cinema-photo cinema-photo--1 parallax-layer"
+                        data-depth="0.15"
+                >
+                    <img src="img/kino_alt.png" alt="">
+                </div>
+
+                <div
+                        class="cinema-photo cinema-photo--2 parallax-layer"
+                        data-depth="0.90"
+                >
+                    <img src="img/kino_neu.png" alt="">
+                </div>
+
+                <div
+                        class="cinema-photo cinema-photo--3 parallax-layer"
+                        data-depth="0.25"
+                >
+                    <img src="img/kino_alt.png" alt="">
+                </div>
+
+                <div
+                        class="cinema-photo cinema-photo--4 parallax-layer"
+                        data-depth="0.80"
+                >
+                    <img src="img/kino_neu.png" alt="">
+                </div>
+
+                <div
+                        class="cinema-photo cinema-photo--5 parallax-layer"
+                        data-depth="1"
+                >
+                    <img src="img/kino_alt.png" alt="">
+                </div>
+
+                <div
+                        class="cinema-photo cinema-photo--6 parallax-layer"
+                        data-depth="0.35"
+                >
+                    <img src="img/kino_neu.png" alt="">
+                </div>
+
+                <div
+                        class="cinema-photo cinema-photo--7 parallax-layer"
+                        data-depth="0.85"
+                >
+                    <img src="img/kino_alt.png" alt="">
+                </div>
+
+                <div
+                        class="cinema-photo cinema-photo--8 parallax-layer"
+                        data-depth="0.20"
+                >
+                    <img src="img/kino_neu.png" alt="">
+                </div>
+
+                <div
+                        class="cinema-photo cinema-photo--9 parallax-layer"
+                        data-depth="0.40"
+                >
+                    <img src="img/kino_alt.png" alt="">
+                </div>
+
+                <div
+                        class="cinema-photo cinema-photo--10 parallax-layer"
+                        data-depth="0.95"
+                >
+                    <img src="img/kino_neu.png" alt="">
+                </div>
+
+                <div
+                        class="cinema-photo cinema-photo--11 parallax-layer"
+                        data-depth="0.75"
+                >
+                    <img src="img/kino_alt.png" alt="">
+                </div>
+
+            </div>
+
+
+            <!-- TITEL -->
+            <h1
+                    class="title parallax-layer"
+                    data-speed-x="-28"
+                    data-speed-y="-18"
+            >
+        <span class="title-line">
+            Kinos<span class="large-t">t</span>erben
+        </span>
+
+                <span class="title-line title-line--second">
+            Schweiz
+        </span>
+            </h1>
+        </section>
+
+        <!-- SEITE 2 -->
+        <!-- SLIDE 2 -->
+        <section
+                class="slide slide--history"
+                aria-labelledby="historyHeading"
+                inert
+        >
+            <div class="history-layout">
+                <div class="history-images">
+                    <!-- Bildpfade an deine Dateien anpassen -->
+                    <img
+                            src="img/kino_alt.png"
+                            alt="Historisches Kino"
+                            class="history-image history-image--old"
+                    >
+
+                    <img
+                            src="img/kino_neu.png"
+                            alt="Modernes Kinogebäude"
+                            class="history-image"
+                    >
+                </div>
+
+                <div class="history-copy">
+                    <h2 id="historyHeading">
+                        Wie hat sich die Schweizer Kinolandschaft<br>
+                        seit 1966 verändert?
+                    </h2>
+
+                    <p>
+                        Das Kino kam Ende des 19. Jahrhunderts in die Schweiz. Bereits 1896 wurden in verschiedenen Schweizer Städten erste Filmvorführungen gezeigt. Damals waren die Filme noch sehr kurz, stumm und meist Teil von Jahrmärkten oder anderen Veranstaltungen. Mit der Zeit wurden feste Kinosäle eröffnet, und immer mehr Menschen begeisterten sich für die bewegten Bilder. So entwickelte sich das Kino zu einer beliebten Form der Unterhaltung und wurde ein wichtiger Teil der Schweizer Kultur.
+                    </p>
+                </div>
+            </div>
+        </section>
+        <!-- SLIDE 3 -->
+        <section
+                class="slide slide--chart"
+                aria-labelledby="chartHeading"
+                inert
+        >
+            <div class="split-layout">
+                <div class="split-visual">
+                    <div class="chart-container">
+                        <canvas
+                                id="cinemaChart"
+                                role="img"
+                                aria-label="Entwicklung der Kinoanzahl. Noch keine Daten vorhanden."
+                        >
+                            Noch keine Daten vorhanden.
+                        </canvas>
+                    </div>
+
+                    <p class="chart-source">
+                        Noch keine Daten vorhanden.
+                    </p>
+                </div>
+
+                <div class="split-copy">
+                    <p class="chapter-number">02 / Entwicklung</p>
+
+                    <h2 id="chartHeading">
+                        Die Kinolandschaft<br>
+                        im Wandel
+                    </h2>
+
+                    <p>
+                        Hier kannst du erklären, wie sich die Anzahl
+                        der Kinos über die Jahre verändert hat und
+                        welche Entwicklungen im Diagramm auffallen.
+                    </p>
+                </div>
+            </div>
+        </section>
+        <!-- SLIDE 4 -->
+        <!-- SLIDE 4 -->
+        <section
+                class="slide slide--map"
+                aria-labelledby="mapHeading"
+                inert
+        >
+            <div class="split-layout">
+                <div class="split-visual">
+                    <div
+                            id="swissMap"
+                            aria-label="Karte der Schweizer Kantone"
+                    ></div>
+
+                    <div class="year-control">
+                        <label for="mapYear">
+                            Jahr:
+                            <output id="mapYearValue" for="mapYear">
+                                2025
+                            </output>
+                        </label>
+
+                        <input
+                                type="range"
+                                id="mapYear"
+                                min="2000"
+                                max="2025"
+                                value="2025"
+                                step="1"
+                        >
+                    </div>
+
+                    <p id="mapStatus" aria-live="polite">
+                        Karte wird geladen …
+                    </p>
+                </div>
+
+                <div class="split-copy">
+                    <p class="chapter-number">03 / Regionen</p>
+
+                    <h2 id="mapHeading">
+                        Wo die Schweiz<br>
+                        ins Kino geht
+                    </h2>
+
+                    <p>
+                        Hier kommt deine Erklärung zur regionalen
+                        Verteilung der Kinos hin. Mit dem Jahresregler
+                        lässt sich später vergleichen, wie sich die
+                        Kinostandorte im Laufe der Zeit verändern.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Navigation bleibt an einer festen Position -->
+    <nav class="slide-navigation" aria-label="Seitennavigation">
+        <button
+                type="button"
+                id="previousSlide"
+                aria-label="Vorherige Seite"
+                disabled
+        >
+            ← Zurück
+        </button>
+
+        <span id="slideCounter" aria-live="polite" aria-atomic="true">
+            1 / 2
+        </span>
+
+        <button
+                type="button"
+                id="nextSlide"
+                aria-label="Nächste Seite"
+        >
+            Weiter →
+        </button>
+    </nav>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script src="script.js"></script>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="map.js"></script>
+
 </body>
 </html>
