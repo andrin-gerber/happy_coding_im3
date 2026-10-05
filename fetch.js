@@ -1,16 +1,4 @@
-function fetchJson(string $url): array {
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-    $response = curl_exec($ch);
-    return json_decode($response, true);
-}
-
-header('Content-Type: text/plain; charset=utf-8');
-
-
-
-const response = await fetch('unload.php');
+const response = await fetch('unload.php?year=2004');
 const year = await response.json();
 
 if (!response.ok) {
@@ -21,3 +9,6 @@ const contentType = response.headers.get('content-type') ?? '';
 if (!contentType.includes('application/json')) {
     throw new Error('Die Antwort ist kein JSON.');
 }
+console.log("Hello World");
+console.log(year);
+
