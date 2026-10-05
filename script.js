@@ -589,6 +589,8 @@ goToSlide(0);
 const chartCanvas = document.querySelector("#cinemaChart");
 
 let cinemaChart = null;
+let scatterChart = null;
+
 
 function createCinemaChart(diagram1) {
     const chartCanvas = document.querySelector("#cinemaChart");
@@ -627,6 +629,8 @@ function createCinemaChart(diagram1) {
             }]
         },
 
+
+
         options: {
             responsive: true,
             maintainAspectRatio: false,
@@ -644,14 +648,38 @@ function createCinemaChart(diagram1) {
             plugins: {
                 legend: {
                     display: false
-                }
-            },
+                },
+
+            title: {
+                display: true,
+                text: "Entwicklung der Anzahl Kinos von 1968 bis 2025",
+                color: "#ffffff",
+                font: {
+                    size: 16,
+                    weight: "normal"
+                },
+                padding: {
+                    bottom: 20
+                },
+                align: "start"
+            }
+        },
+
+
 
             scales: {
                 x: {
                     ticks: {
                         display: true,
-                        color: "#aaaaaa"
+                        color: "#aaaaaa",
+                        autoSkip: false,
+
+
+                        callback: function(value) {
+                            const year = Number(this.getLabelForValue(value));
+
+                            return year % 5 === 0 ? year : "";
+                        }
                     },
 
                     grid: {
@@ -661,6 +689,7 @@ function createCinemaChart(diagram1) {
                     border: {
                         color: "#555555"
                     },
+
 
                     title: {
                         display: true,
@@ -689,6 +718,224 @@ function createCinemaChart(diagram1) {
                     title: {
                         display: true,
                         text: "Anzahl Kinos",
+                        color: "#aaaaaa"
+                    }
+                }
+            }
+        }
+    });
+}
+
+function groupScatterPoints(data, hallKey, cinemaKey) {
+    const groups = new Map();
+
+    data.forEach(item => {
+        const rawHalls = item[hallKey];
+        const rawCinemas = item[cinemaKey];
+
+        // Missing data
+        if (
+            rawHalls === null ||
+            rawCinemas === null ||
+            rawHalls === undefined ||
+            rawCinemas === undefined
+        ) {
+            return;
+        }
+
+        const halls = Number(rawHalls);
+        const cinemas = Number(rawCinemas);
+
+        if (
+            !Number.isFinite(halls) ||
+            !Number.isFinite(cinemas)
+        ) {
+            return;
+        }
+
+        const key = `${halls}-${cinemas}`;
+
+        if (!groups.has(key)) {
+            groups.set(key, {
+                x: halls,
+                y: cinemas,
+                count: 0
+            });
+        }
+
+        groups.get(key).count++;
+    });
+
+    return [...groups.values()];
+}
+
+
+function createScatterChart(diagram3) {
+    const scatterCanvas = document.querySelector("#scatterChart");
+
+    if (!scatterCanvas || typeof Chart === "undefined") {
+        return;
+    }
+
+    if (scatterChart) {
+        scatterChart.destroy();
+    }
+
+    // 1966
+    const points1966 = groupScatterPoints(
+        diagram3,
+        "hall_mun_total_1966",
+        "cinema_mun_total_1966"
+    );
+
+
+    // 2025
+    const points2025 = groupScatterPoints(
+        diagram3,
+        "hall_mun_total_2025",
+        "cinema_mun_total_2025"
+    );
+
+    const maxY = Math.max(
+        ...points1966.map(point => point.y),
+        ...points2025.map(point => point.y)
+    );
+
+    scatterChart = new Chart(scatterCanvas, {
+        type: "scatter",
+
+        data: {
+            datasets: [
+                {
+                    label: "1966",
+                    data: points1966,
+
+                    backgroundColor: "rgba(255, 255, 255, 0.45)",
+                    borderColor: "rgba(255, 255, 255, 0.8)",
+
+                    pointRadius: function(context) {
+                        const count = context.raw.count;
+
+                        return 4 + Math.sqrt(count) * 3;
+                    },
+
+                    pointHoverRadius: function(context) {
+                        const count = context.raw.count;
+
+                        return 6 + Math.sqrt(count) * 3;
+                    }
+                },
+
+                {
+                    label: "2025",
+                    data: points2025,
+
+                    backgroundColor: "rgba(255, 180, 180, 0.65)",
+                    borderColor: "rgba(255, 180, 180, 1)",
+
+                    pointRadius: function(context) {
+                        const count = context.raw.count;
+
+                        return 4 + Math.sqrt(count) * 3;
+                    },
+
+                    pointHoverRadius: function(context) {
+                        const count = context.raw.count;
+
+                        return 6 + Math.sqrt(count) * 3;
+                    }
+                }
+            ]
+        },
+
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: false,
+
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        color: "#aaaaaa"
+                    }
+                },
+
+                title: {
+                    display: true,
+                    text: "Kinosäle und Kinos pro Gemeinde: 1966 vs. 2025",
+                    color: "#ffffff",
+                    font: {
+                        size: 16,
+                        weight: "normal"
+                    },
+                    padding: {
+                        bottom: 20
+                    },
+                    align: "start"
+                },
+
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const point = context.raw;
+
+                            return [
+                                `Säle: ${point.x}`,
+                                `Kinos: ${point.y}`,
+                                `Gemeinden: ${point.count}`
+                            ];
+                        }
+                    }
+                }
+            },
+
+            scales: {
+                x: {
+                    type: "linear",
+                    position: "bottom",
+
+                    ticks: {
+                        color: "#aaaaaa",
+                        precision: 0
+                    },
+
+                    grid: {
+                        color: "rgba(255, 255, 255, 0.1)"
+                    },
+
+                    border: {
+                        color: "#555555"
+                    },
+
+                    title: {
+                        display: true,
+                        text: "Anzahl Kinosäle pro Gemeinde",
+                        color: "#aaaaaa"
+                    }
+                },
+
+                y: {
+                    min: 0,
+                    max: maxY + 1,
+
+                    ticks: {
+                        color: "#aaaaaa",
+                        precision: 0,
+                        stepSize: 1
+                    },
+
+                    grid: {
+                        color: "rgba(255, 255, 255, 0.1)"
+                    },
+
+                    border: {
+                        color: "#555555"
+                    },
+
+                    title: {
+                        display: true,
+                        text: "Anzahl Kinos pro Gemeinde",
                         color: "#aaaaaa"
                     }
                 }

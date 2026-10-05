@@ -180,7 +180,7 @@
                     </div>
 
                     <p class="chart-source">
-                        Noch keine Daten vorhanden.
+
                     </p>
                 </div>
 
@@ -223,7 +223,7 @@
                         <input
                                 type="range"
                                 id="mapYear"
-                                min="2000"
+                                min="1966"
                                 max="2025"
                                 value="2025"
                                 step="1"
@@ -250,55 +250,40 @@
             </div>
         </section>
         <section
-                class="slide slide--map"
-                aria-labelledby="mapHeading"
+                class="slide slide--scatter"
+                aria-labelledby="scatterHeading"
                 inert
         >
             <div class="split-layout">
                 <div class="split-visual">
-                    <div
-                            id="swissMap"
-                            aria-label="Karte der Schweizer Kantone"
-                    ></div>
-
-                    <div class="year-control">
-                        <label for="mapYear">
-                            Jahr:
-                            <output id="mapYearValue" for="mapYear">
-                                2025
-                            </output>
-                        </label>
-
-                        <input
-                                type="range"
-                                id="mapYear"
-                                min="2000"
-                                max="2025"
-                                value="2025"
-                                step="1"
+                    <div class="chart-container">
+                        <canvas
+                                id="scatterChart"
+                                role="img"
+                                aria-label="Zusammenhang zwischen Anzahl Kinos und Anzahl Kinosälen pro Gemeinde."
                         >
+                            Noch keine Daten vorhanden.
+                        </canvas>
                     </div>
 
-                    <p id="mapStatus" aria-live="polite">
-                        Karte wird geladen …
-                    </p>
+                    <p class="chart-source"></p>
                 </div>
 
                 <div class="split-copy">
-                    <p class="chapter-number">03 / Regionen</p>
+                    <p class="chapter-number">04 / Vergleich</p>
 
-                    <h2 id="mapHeading">
-                        Wo die Schweiz<br>
-                        ins Kino geht
+                    <h2 id="scatterHeading">
+                        Kinos und Säle<br>
+                        pro Gemeinde
                     </h2>
 
                     <p>
-                        Blablabla
+                        Dieser Scatterplot zeigt den Zusammenhang zwischen der Anzahl
+                        Kinosäle und der Anzahl Kinos pro Gemeinde.
                     </p>
                 </div>
             </div>
         </section>
-
     </div>
 
     <!-- Navigation bleibt an einer festen Position -->

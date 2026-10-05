@@ -1,112 +1,269 @@
-(async () => {
+async function createCinemaMap(diagram2) {
     const container = document.querySelector("#swissMap");
     const slider = document.querySelector("#mapYear");
     const yearOutput = document.querySelector("#mapYearValue");
     const status = document.querySelector("#mapStatus");
 
-    if (!container || !slider || !yearOutput || !status) return;
-
-    if (typeof L === "undefined") {
-        status.textContent =
-            "Leaflet konnte nicht geladen werden.";
+    if (!container || !slider || !yearOutput || !status) {
         return;
     }
 
-    // Der Jahresregler verändert zunächst nur die Jahresanzeige.
-    // Die Heatmap-Daten kommen später aus deinem Backend.
-    function updateYear() {
-        yearOutput.value = slider.value;
-
-        status.textContent =
-            `Noch keine Kinodaten für ${slider.value} vorhanden.`;
+    if (typeof L === "undefined") {
+        status.textContent = "Leaflet konnte nicht geladen werden.";
+        return;
     }
 
-    slider.addEventListener("input", updateYear);
 
-    // Pfeiltasten bedienen den Regler, ohne Slides zu wechseln.
-    slider.addEventListener("keydown", event => {
-        event.stopPropagation();
-    });
+    // ================================
+    // MAP ERSTELLEN
+    // ================================
 
-    try {
-        const map = L.map(container, {
-            zoomControl: false,
-            scrollWheelZoom: false,
-            dragging: false,
-            doubleClickZoom: false,
-            boxZoom: false,
-            touchZoom: false,
-            keyboard: false,
-            zoomSnap: 0
-        }).setView([46.8, 8.2], 7);
+    const map = L.map(container, {
+        zoomControl: false,
+        scrollWheelZoom: false,
+        dragging: false,
+        doubleClickZoom: false,
+        boxZoom: false,
+        touchZoom: false,
+        keyboard: false,
+        zoomSnap: 0
+    }).setView([46.8, 8.2], 7);
 
-        map.attributionControl.addAttribution("© swisstopo");
 
-        // Eigene Ebene: Grenzen liegen später über der Heatmap.
-        map.createPane("cantonBorders");
-        map.getPane("cantonBorders").style.zIndex = "450";
-        map.getPane("cantonBorders").style.pointerEvents = "none";
+    map.attributionControl.addAttribution("© swisstopo");
 
-        const response = await fetch("data/kantone.geojson");
 
-        if (!response.ok) {
-            throw new Error(
-                `GeoJSON konnte nicht geladen werden: HTTP ${response.status}`
-            );
+    // ================================
+    // EBENE FÜR KINOS
+    // ================================
+
+    map.createPane("cinemaPoints");
+
+    map.getPane("cinemaPoints").style.zIndex = "400";
+
+
+    // ================================
+    // EBENE FÜR KANTONSGRENZEN
+    // ================================
+
+    map.createPane("cantonBorders");
+
+    map.getPane("cantonBorders").style.zIndex = "450";
+    map.getPane("cantonBorders").style.pointerEvents = "none";
+
+
+    // ================================
+    // GEOJSON LADEN
+    // ================================
+
+    const response = await fetch("data/kantone.geojson");
+
+    if (!response.ok) {
+        throw new Error(
+            `GeoJSON konnte nicht geladen werden: HTTP ${response.status}`
+        );
+    }
+
+    const geojson = await response.json();
+
+
+    // ================================
+    // KANTONSGRENZEN
+    // ================================
+
+    const borders = L.geoJSON(geojson, {
+        pane: "cantonBorders",
+        interactive: false,
+
+        style: {
+            color: "#ffffff",
+            weight: 1,
+            opacity: 1,
+            fill: false
         }
+    }).addTo(map);
 
-        const geojson = await response.json();
 
-        const borders = L.geoJSON(geojson, {
-            pane: "cantonBorders",
-            interactive: false,
+    const bounds = borders.getBounds();
 
-            style: {
-                color: "#ffffff",
-                weight: 1,
-                opacity: 1,
-                fill: false
+    if (!bounds.isValid()) {
+        throw new Error(
+            "Die Datei enthält keine gültigen Kartenflächen."
+        );
+    }
+
+
+    // ================================
+    // LAYER FÜR KINODATEN
+    // ================================
+
+    const cinemaLayer = L.layerGroup().addTo(map);
+
+
+    // ================================
+    // JAHR ANZEIGEN
+    // ================================
+
+    function updateYear() {
+        const year = slider.value;
+
+        yearOutput.value = year;
+
+        // Alte Punkte entfernen
+        cinemaLayer.clearLayers();
+
+        let totalCinemas = 0;
+        let municipalitiesWithCinema = 0;
+
+
+        diagram2.forEach(item => {
+
+            // Beispiel:
+            // item["2025"]
+            const cinemaCount = item[year];
+
+
+            // null = keine Daten
+            // 0 = kein Kino
+            if (
+                cinemaCount === null ||
+                cinemaCount === undefined ||
+                Number(cinemaCount) <= 0
+            ) {
+                return;
             }
-        }).addTo(map);
 
-        const bounds = borders.getBounds();
 
-        if (!bounds.isValid()) {
-            throw new Error("Die Datei enthält keine gültigen Kartenflächen.");
+            const latitude = Number(item.latitude);
+            const longitude = Number(item.longitude);
+            const count = Number(cinemaCount);
+
+
+            // ungültige Koordinaten überspringen
+            if (
+                !Number.isFinite(latitude) ||
+                !Number.isFinite(longitude)
+            ) {
+                return;
+            }
+
+
+            totalCinemas += count;
+            municipalitiesWithCinema++;
+
+
+            // Grössere Anzahl Kinos = grösserer Kreis
+            const radius = Math.min(
+                4 + count * 2,
+                18
+            );
+
+
+            const marker = L.circleMarker(
+                [latitude, longitude],
+                {
+                    pane: "cinemaPoints",
+
+                    radius: radius,
+
+                    color: "#ffffff",
+                    weight: 1,
+                    opacity: 1,
+
+                    fillColor: "#ffffff",
+                    fillOpacity: 0.55
+                }
+            );
+
+
+            // Tooltip bei Hover
+            marker.bindTooltip(
+                `${item.municipality}: ${count} ${
+                    count === 1 ? "Kino" : "Kinos"
+                }`
+            );
+
+
+            marker.addTo(cinemaLayer);
+        });
+
+
+        status.textContent =
+            `${year}: ${totalCinemas} Kinos in ` +
+            `${municipalitiesWithCinema} Gemeinden`;
+    }
+
+
+    // ================================
+    // SLIDER
+    // ================================
+
+    slider.addEventListener(
+        "input",
+        updateYear
+    );
+
+
+    slider.addEventListener(
+        "keydown",
+        event => {
+            event.stopPropagation();
+        }
+    );
+
+
+    // ================================
+    // KARTE EINPASSEN
+    // ================================
+
+    function fitMap() {
+        if (
+            !container.clientWidth ||
+            !container.clientHeight
+        ) {
+            return;
         }
 
-        function fitMap() {
-            if (!container.clientWidth || !container.clientHeight) return;
+        map.invalidateSize({
+            pan: false
+        });
 
-            map.invalidateSize({ pan: false });
+        map.fitBounds(bounds, {
+            padding: [15, 15],
+            animate: false
+        });
+    }
 
-            map.fitBounds(bounds, {
-                padding: [15, 15],
-                animate: false
-            });
-        }
 
-        fitMap();
-        updateYear();
+    fitMap();
+    updateYear();
 
-        // Karte bei Änderung der Fenstergröße neu einpassen.
-        const observer = new ResizeObserver(fitMap);
-        observer.observe(container);
 
-        // Auch nach deiner horizontalen Slide-Animation einpassen.
-        document.querySelector("#slides")
-            ?.addEventListener("transitionend", event => {
+    // ================================
+    // RESIZE
+    // ================================
+
+    const observer = new ResizeObserver(
+        fitMap
+    );
+
+    observer.observe(container);
+
+
+    // Nach Slide-Animation neu berechnen
+    document
+        .querySelector("#slides")
+        ?.addEventListener(
+            "transitionend",
+            event => {
+
                 if (
                     event.target.id === "slides" &&
                     event.propertyName === "transform"
                 ) {
                     fitMap();
                 }
-            });
-    } catch (error) {
-        console.error("Kartenfehler:", error);
 
-        status.textContent =
-            "Karte konnte nicht geladen werden. Prüfe data/kantone.geojson.";
-    }
-})();
+            }
+        );
+}
