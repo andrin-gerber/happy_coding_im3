@@ -11,3 +11,5 @@ Kurze Beschreibung des Projekts mit folgenden Themen:
 ● benutzte Ressourcen
 ● mindestens jeweils ein Screenshot in Mobile- und Desktop-Ansicht
 ● Foto des Marktstands
+
+unbedingt erwähnen und begründen: weshalb wir welche entscheidungen getroffen haben bei fehlenden daten/messwerten.
