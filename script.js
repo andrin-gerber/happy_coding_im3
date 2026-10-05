@@ -590,24 +590,40 @@ const chartCanvas = document.querySelector("#cinemaChart");
 
 let cinemaChart = null;
 
-if (chartCanvas && typeof Chart !== "undefined") {
+function createCinemaChart(diagram1) {
+    const chartCanvas = document.querySelector("#cinemaChart");
+
+    if (!chartCanvas || typeof Chart === "undefined") {
+        return;
+    }
+
+    // Falls bereits ein Chart existiert
+    if (cinemaChart) {
+        cinemaChart.destroy();
+    }
+
     cinemaChart = new Chart(chartCanvas, {
         type: "line",
 
         data: {
-            labels: [],
+            labels: diagram1.map(item => item.year),
+
             datasets: [{
                 label: "Anzahl Kinos",
-                data: [],
+                data: diagram1.map(item => item.cinema_ch_total),
 
                 borderColor: "#ffffff",
                 borderWidth: 3,
-                pointBackgroundColor: "#ffffff",
-                pointRadius: 4,
-                pointHoverRadius: 7,
+
+                spanGaps: true,
 
                 tension: 0,
-                fill: false
+                fill: false,
+
+                // Keine Punkte
+                pointRadius: 0,
+                pointHoverRadius: 0,
+                pointHitRadius: 0
             }]
         },
 
@@ -615,6 +631,15 @@ if (chartCanvas && typeof Chart !== "undefined") {
             responsive: true,
             maintainAspectRatio: false,
             animation: false,
+
+            // Zusätzlich global für diesen Chart:
+            elements: {
+                point: {
+                    radius: 0,
+                    hoverRadius: 0,
+                    hitRadius: 0
+                }
+            },
 
             plugins: {
                 legend: {
@@ -625,7 +650,7 @@ if (chartCanvas && typeof Chart !== "undefined") {
             scales: {
                 x: {
                     ticks: {
-                        display: false,
+                        display: true,
                         color: "#aaaaaa"
                     },
 
@@ -648,8 +673,7 @@ if (chartCanvas && typeof Chart !== "undefined") {
                     beginAtZero: true,
 
                     ticks: {
-                        // Zahlen erst anzeigen, wenn Daten vorhanden sind.
-                        display: false,
+                        display: true,
                         color: "#aaaaaa",
                         precision: 0
                     },
