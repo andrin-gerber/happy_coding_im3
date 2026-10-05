@@ -249,6 +249,55 @@
                 </div>
             </div>
         </section>
+        <section
+                class="slide slide--map"
+                aria-labelledby="mapHeading"
+                inert
+        >
+            <div class="split-layout">
+                <div class="split-visual">
+                    <div
+                            id="swissMap"
+                            aria-label="Karte der Schweizer Kantone"
+                    ></div>
+
+                    <div class="year-control">
+                        <label for="mapYear">
+                            Jahr:
+                            <output id="mapYearValue" for="mapYear">
+                                2025
+                            </output>
+                        </label>
+
+                        <input
+                                type="range"
+                                id="mapYear"
+                                min="2000"
+                                max="2025"
+                                value="2025"
+                                step="1"
+                        >
+                    </div>
+
+                    <p id="mapStatus" aria-live="polite">
+                        Karte wird geladen …
+                    </p>
+                </div>
+
+                <div class="split-copy">
+                    <p class="chapter-number">03 / Regionen</p>
+
+                    <h2 id="mapHeading">
+                        Wo die Schweiz<br>
+                        ins Kino geht
+                    </h2>
+
+                    <p>
+                        Blablabla
+                    </p>
+                </div>
+            </div>
+        </section>
 
     </div>
 
