@@ -109,6 +109,96 @@ window.addEventListener("keydown", (event) => {
     }
 });
 
+/* ----------------------------------
+   SIDEWAYS INPUT (wheel, trackpad, touch)
+---------------------------------- */
+
+const TRANSITION_MS = 1100;   // same as the CSS transition
+let wheelLockUntil = 0;
+
+// Gestures that belong to the map or form controls must not change slides.
+function shouldIgnoreGesture(target) {
+    return target instanceof Element &&
+        Boolean(target.closest("#swissMap, input, textarea, select"));
+}
+
+// On mobile, .split-layout / .history-layout scroll vertically inside.
+function canScrollVertically(el) {
+    while (el && el !== document.body) {
+        const style = getComputedStyle(el);
+        if (/(auto|scroll)/.test(style.overflowY) &&
+            el.scrollHeight > el.clientHeight) {
+            return true;
+        }
+        el = el.parentElement;
+    }
+    return false;
+}
+
+window.addEventListener("wheel", (event) => {
+    if (event.ctrlKey) return;                       // pinch-zoom
+    if (shouldIgnoreGesture(event.target)) return;   // let Leaflet zoom
+
+    const horizontal = Math.abs(event.deltaX) > Math.abs(event.deltaY);
+
+    if (!horizontal && canScrollVertically(event.target)) return;
+
+    event.preventDefault();
+
+    const delta = horizontal ? event.deltaX : event.deltaY;
+    const now = performance.now();
+
+    // While a transition runs (and while trackpad inertia keeps
+    // firing events) ignore input, so one swipe = one slide.
+    if (now < wheelLockUntil) {
+        wheelLockUntil = Math.max(wheelLockUntil, now + 120);
+        return;
+    }
+
+    if (Math.abs(delta) < 8) return;
+
+    const before = activeSlide;
+    goToSlide(activeSlide + (delta > 0 ? 1 : -1));
+
+    if (activeSlide !== before) {
+        wheelLockUntil = now + TRANSITION_MS;
+    }
+}, { passive: false });
+
+
+/* Touch swipe */
+let touchStartX = 0;
+let touchStartY = 0;
+let touchTracking = false;
+
+slidesContainer.addEventListener("touchstart", (event) => {
+    touchTracking =
+        event.touches.length === 1 &&
+        !shouldIgnoreGesture(event.target);
+
+    if (!touchTracking) return;
+
+    touchStartX = event.touches[0].clientX;
+    touchStartY = event.touches[0].clientY;
+}, { passive: true });
+
+slidesContainer.addEventListener("touchend", (event) => {
+    if (!touchTracking) return;
+    touchTracking = false;
+
+    const touch = event.changedTouches[0];
+    const dx = touch.clientX - touchStartX;
+    const dy = touch.clientY - touchStartY;
+
+    // Must be mostly horizontal and long enough.
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+
+    goToSlide(activeSlide + (dx < 0 ? 1 : -1));
+}, { passive: true });
+
+slidesContainer.addEventListener("touchcancel", () => {
+    touchTracking = false;
+}, { passive: true });
 
 /* -----------------------------------------
    TIEFE DER BILDER VORBEREITEN

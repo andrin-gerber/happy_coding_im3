@@ -28,8 +28,17 @@ body {
     color: #fff;
 
     font-family: "Share Tech Mono", monospace;
+
+
 }
 
+body {
+    overscroll-behavior: none;   /* stops the browser's back/forward swipe */
+}
+
+.slides {
+    touch-action: pan-y;         /* horizontal gestures go to our JS */
+}
 
 /* --------------------------------------------------
    VIEWPORT / SLIDER BASIS
