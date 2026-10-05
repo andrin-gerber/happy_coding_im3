@@ -88,10 +88,14 @@ foreach ($raw as $gdenr => $values) {
     ];
 }
 
+print_r($audit);
+
 return [
     'diagram1' => $diagram1,
     'diagram2' => $diagram2,
     'diagram3' => $diagram3,
     'audit'    => $audit,
 ];
+
+
 

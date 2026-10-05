@@ -99,4 +99,8 @@ $statement3 = $pdo->prepare($sql3);
 $statement3->execute();
 $rows3 = $statement3->fetchAll();
 
-echo json_encode($rows3, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE);
+echo json_encode([
+    'diagram1' => $rows1,
+    'diagram2' => $rows2,
+    'diagram3' => $rows3
+], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE);

@@ -25,23 +25,23 @@ $cinemas_per_year = array_combine($years, $cinema_ch_totals);
 $json2 = file_get_contents('../data/diagram2.json');
 $data2 = json_decode($json2, true);
 
-// ♡ get the years and the keys of the years of the data
+// ♡ get the years from json2
 $years = $data2['dataset']['dimension']['Jahr']['category']['label'];
 
-// ♡ get all the values of the data
+// ♡ get amount of cinemas per year for each municipality
 $values = $data2['dataset']['value'];
 
-// ♡ get all the gfs codes of the municipalities of the data as values
+// ♡ get all the bfs codes of the municipalities. flip the array so the bfs codes are the values instead of the keys
 $municipalityIndex = $data2['dataset']['dimension']['Kanton (-) / Gemeinde (......)']['category']['index'];
 $municipalityIds = array_keys($municipalityIndex);
 
+// ♡ create new array with bfs code -> the array contains the amount of cinemas in each municipality for every year
 $cinemas_mun_totals = [];
 $i = 0;
-// ♡ create new array with gfs code -> array of every year with amount of cinemas in municipality
 foreach ($municipalityIds as $gdenr) {
 
     foreach ($years as $year) {
-        $cinemas_mun_totals[$gdenr][$year] = $values[$i];
+        $cinemas_mun_totals[$gdenr][$year] = $values[$i]; //nimm jedi gmeind, gang jedes jahr dure und mach en neue array für die gmeint mit de bfs nummere und em jahr und füeg det d azahl kinos wos i dem jahr i dere gmeind ge het i, das isch de "values", und gang alli values dure drum i++. zB: nimm adliswil bzw de bfs code devo - was i dem fall 131 isch, denn gang is jahr 1966, erstell en array mit de azahl kinos wos denn in adliswil ge het, indem du de value 0 (i=0) nimmsch. denn gang is nöchste jahr und nimm de nöchst value (i=1)
         $i++;
     }
 }
@@ -54,7 +54,7 @@ $header = array_map('trim', fgetcsv($handle , null , ',' , '"' , ''));
 
 $bfs_codes_and_coordinates = [];
 
-// ♡ combine the header and the values to an array
+// ♡ combine the header and the values to the above array
 while (($row = fgetcsv($handle , null , ',' , '"' , '"')) !== false) {
     if ($row[0]==='') {
         continue;
@@ -65,11 +65,11 @@ fclose($handle);
 
 // ♡ combine coordinates with municipalities
 
-// ♡ get a list of all names of the municipalities
+// ♡ get a list of all names of the municipalities (not necessary but helpful to check)
 $municipality_names = $data2['dataset']['dimension']['Kanton (-) / Gemeinde (......)']['category']['label'];
 
+// ♡ combine the two arrays: for each bfs code (from the array with amount of cinemas per municipality) go through every bfs code (from the array with the coordinates). when the bfs codes match, combine the two arrays and add it to a new array.
 $data_diagram2 = [];
-// ♡ combine the two arrays -> for each cinema bfs code go thru every coordinate bfs code -> if there is a match -> combine the two arrays and add it to a new array
 foreach ($cinemas_mun_totals as $bfs => $cinemas_of_municipality) {
     foreach ($bfs_codes_and_coordinates as $bfs_and_coordinate) {
         if ((int)$bfs === (int)$bfs_and_coordinate['GDENR']) {
@@ -78,7 +78,7 @@ foreach ($cinemas_mun_totals as $bfs => $cinemas_of_municipality) {
                 'coordinates' => $bfs_and_coordinate,
                 'cinemas'     => $cinemas_of_municipality,
             ];
-            break; // Treffer gefunden, innere Schleife beenden
+            break; // treffer gefunden, innere schleife beenden
         }
     }
 }
@@ -92,15 +92,14 @@ foreach ($cinemas_mun_totals as $bfs => $cinemas_of_municipality) {
 $json3 = file_get_contents('../data/diagram3.json');
 $data3 = json_decode($json3, true);
 
-
 $years3 = $data3['dataset']['dimension']['Jahr']['category']['label'];
 $halls = $data3['dataset']['value'];
 //municipalityIds comes from diagram2
 
+
+// ♡ PART 1: create array with the bfs code as key and the amount of halls for each year. do this for each municipality.
 $data_diagram3_part1 = [];
 $i1 = 0;
-
-// ♡ create array with the gfs code as key and add the number of halls to every year to every municipality
 foreach ($municipalityIds as $municipalityId){
     foreach ($years3 as $year3){
         $data_diagram3_part1[$municipalityId][$year3] = $halls[$i1];
@@ -108,21 +107,18 @@ foreach ($municipalityIds as $municipalityId){
     }
 }
 
-
+// ♡ PART 2: combine the amount of cinemas per municipality in the two years with the array above
 $data_diagram3 = [];
-
-// ♡ combine the amount of cinemas in the two years with the array above
 foreach ($data_diagram3_part1 as $key => $data_diagram3_part1_mun) {
-    // ♡ create the array with the values null to be able to use the gfs code as key
+    // ♡ create the array with the values null to be able to use the bfs code as key
     if (!isset($data_diagram3[$key])) {
         $data_diagram3[$key] = [
             'cinemas1966' => null,
             'cinemas2025' => null,
         ];
     }
-    // ♡ combine the two arrays if the gfs code matches
+    // ♡ combine the two arrays if the bfs code matches
     foreach ($data_diagram2 as $municipality_cinema) {
-
         if ((int)$municipality_cinema['coordinates']['GDENR'] === $key) {
             $data_diagram3[$key]['halls1966'] = $data_diagram3_part1_mun['1966'];
             $data_diagram3[$key]['halls2025'] = $data_diagram3_part1_mun['2025'];
