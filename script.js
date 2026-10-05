@@ -595,10 +595,10 @@ if (chartCanvas && typeof Chart !== "undefined") {
         type: "line",
 
         data: {
-            labels: [],
+            labels: [1966, 1967],
             datasets: [{
                 label: "Anzahl Kinos",
-                data: [],
+                data: [650, 642],
 
                 borderColor: "#ffffff",
                 borderWidth: 3,
