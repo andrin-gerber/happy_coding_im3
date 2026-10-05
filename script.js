@@ -593,7 +593,6 @@ let cinemaChart = null;
 if (chartCanvas && typeof Chart !== "undefined") {
     cinemaChart = new Chart(chartCanvas, {
         type: "line",
-
         data: {
             labels: diagram1.map(item => item.year),
             datasets: [{
@@ -602,10 +601,8 @@ if (chartCanvas && typeof Chart !== "undefined") {
 
                 borderColor: "#ffffff",
                 borderWidth: 3,
-                pointBackgroundColor: "#ffffff",
-                pointRadius: 4,
-                pointHoverRadius: 7,
-
+                pointRadius: 0,
+                pointHoverRadius: 0,
                 tension: 0,
                 fill: false
             }]
