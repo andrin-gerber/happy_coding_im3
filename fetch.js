@@ -1,5 +1,3 @@
-const response = await fetch('unload.php?year=2004');
-const year = await response.json();
 
 async function chart1() {
     const url = 'unload.php';
@@ -21,7 +19,7 @@ async function chart1() {
     return await response.json();
 }
 
-chart1();
+
 
 console.log("Hello World");
 console.log(chart1());
