@@ -6,6 +6,7 @@ $extracted = include __DIR__ . '/extract.php';
 
 $cinemas_per_year = $extracted['cinemas_per_year'];
 $data_diagram2    = $extracted['data_diagram2'];
+$data_diagram3    = $extracted['data_diagram3'];
 
 $first_year = 1966;
 $last_year  = 2025;
@@ -69,30 +70,23 @@ foreach ($data_diagram2 as $bfs => $municipality) {
     ];
 }
 
-//var_dump($diagram1);
-
 // ✧ ─────────── diagram 3 ────────────── ✧
 
-// ♡ halls per municipality (only 1966 and 2025)
+// ♡ combine cinemas + halls per municipality (1966 + 2025) with their bfs code
 
-$halls_raw = $extracted['halls_per_municipality'];
-$diagram3  = [];
+$raw = $extracted['data_diagram3'];
+$diagram3 = [];
 
-foreach ($halls_raw as $gdenr => $values) {
-
-    // Falls ein Wert fehlt → null
-    $h1966 = $values[1966] ?? null;
-    $h2025 = $values[2025] ?? null;
-
+// ♡ add bfs code to the array as id
+foreach ($raw as $gdenr => $values) {
     $diagram3[$gdenr] = [
-        'id'         => $gdenr,
-        'halls_1966' => $h1966,
-        'halls_2025' => $h2025,
+        'id'             => $gdenr,
+        'cinemas_1966'   => $values['cinemas1966'] ?? null,
+        'cinemas_2025'   => $values['cinemas2025'] ?? null,
+        'halls_1966'     => $values['halls1966'] ?? null,
+        'halls_2025'     => $values['halls2025'] ?? null,
     ];
 }
-
-
-print_r($diagram2);
 
 return [
     'diagram1' => $diagram1,
