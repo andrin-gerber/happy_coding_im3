@@ -107,14 +107,14 @@ foreach ($transformed['diagram2'] as $municipality) {
 // ✧ ─────────── add data diagram3 ────────────── ✧
 
 $insert_halls_mun = $pdo->prepare(
-    'INSERT INTO diagram3 (gfs, cinema_mun_total_1966, cinema_mun_total_2025, hall_mun_total_1966, hall_mun_total_2025)
-    VALUES (:gfs, :cinema_mun_total_1966, :cinema_mun_total_2025, :hall_mun_total_1966, :hall_mun_total_2025)'
+    'INSERT INTO diagram3 (bfs, cinema_mun_total_1966, cinema_mun_total_2025, hall_mun_total_1966, hall_mun_total_2025)
+    VALUES (:bfs, :cinema_mun_total_1966, :cinema_mun_total_2025, :hall_mun_total_1966, :hall_mun_total_2025)'
 );
 
 // ✧ ─────────── add data diagram1 ────────────── ✧
 foreach ($transformed['diagram3'] as $data_diagram3) {
     $insert_halls_mun->execute([
-        'gfs' => $data_diagram3['id'],
+        'bfs' => $data_diagram3['id'],
         'cinema_mun_total_1966' => $data_diagram3['cinemas_1966'],
         'cinema_mun_total_2025' => $data_diagram3['cinemas_2025'],
         'hall_mun_total_1966' => $data_diagram3['halls_1966'],
