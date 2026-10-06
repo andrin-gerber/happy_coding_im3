@@ -70,6 +70,8 @@ foreach ($data_diagram2 as $bfs => $municipality) {
     ];
 }
 
+
+
 // ✧ ─────────── diagram 3 ────────────── ✧
 
 // ♡ combine cinemas + halls per municipality (1966 + 2025) with their bfs code
@@ -87,8 +89,6 @@ foreach ($raw as $gdenr => $values) {
         'halls_2025'     => $values['halls2025'] ?? null,
     ];
 }
-
-print_r($audit);
 
 return [
     'diagram1' => $diagram1,
