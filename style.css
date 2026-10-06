@@ -1125,6 +1125,26 @@ body {
     color: #777777;
 }
 
+/* Fazit-Slide: mehr Platz für den langen Text */
+.slide--conclusion .split-layout {
+    inset: 8% 6% 14%;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+}
+
+.slide--conclusion .split-copy h2 {
+    margin-bottom: 1rem;
+    font-size: clamp(1.2rem, 2vw, 2.2rem);
+    line-height: 1.15;
+}
+
+.slide--conclusion .split-copy > p:not(.chapter-number) {
+    font-size: clamp(0.8rem, 0.95vw, 0.95rem);
+    line-height: 1.4;
+}
+
+.slide--conclusion .conclusion-image-placeholder {
+    min-height: 0;
+}
 
 @media (max-width: 700px) {
     .team-grid {
