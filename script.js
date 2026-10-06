@@ -669,7 +669,7 @@ function createCinemaChart(diagram1) {
 
             title: {
                 display: true,
-                text: "Entwicklung der Anzahl Kinos von 1968 bis 2025",
+                text: "Entwicklung der Anzahl Kino von 1966 bis 2025: Eine Kinolandschaft im Wandel",
                 color: "#ffffff",
                 font: {
                     size: 16,
@@ -922,7 +922,7 @@ function createScatterChart(diagram3) {
 
                 title: {
                     display: true,
-                    text: "Kinosäle und Kinos pro Gemeinde: 1966 vs. 2025",
+                    text: "Kapazitätsentwicklung im Schweizer Kinosektor (1966–2025): Weniger Betriebe, mehr Leinwände",
                     color: "#ffffff",
                     font: {
                         size: 16,
