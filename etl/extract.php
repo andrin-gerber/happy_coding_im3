@@ -158,6 +158,83 @@ if (isset($cinemas_mun_totals[$porrentruy_be], $cinemas_mun_totals[$porrentruy_j
     unset($cinemas_mun_totals[$porrentruy_ju]);
 }
 
+// ♡ combine Braunwald (1603) into Schwanden (1627) by summing the values for each year 1966 to 2025
+$schwanden = 1627;
+$braunwald = 1603;
+
+if (isset($cinemas_mun_totals[$schwanden], $cinemas_mun_totals[$braunwald])) {
+    for ($year = 1966; $year <= 2025; $year++) {
+        $value_schwanden = $cinemas_mun_totals[$schwanden][$year] ?? null;
+        $value_braunwald = ($year >= 2011) ? 0 : ($cinemas_mun_totals[$braunwald][$year] ?? null);
+
+        $cinemas_mun_totals[$schwanden][$year] = ($value_schwanden === null && $value_braunwald === null)
+            ? null
+            : ($value_schwanden ?? 0) + ($value_braunwald ?? 0);
+    }
+    unset($cinemas_mun_totals[$braunwald]);
+}
+
+// ♡ combine Näfels (1619) into Niederurnen (1622) by summing the values for each year 1966-2010, then use ONLY the values of Glarus Nord (1630) for each year 2011-2025
+$niederurnen = 1622;
+$naefels = 1619;
+$glarus_nord = 1630;
+
+for ($year = 1966; $year <= 2010; $year++) {
+    $value_niederurnen = $cinemas_mun_totals[$niederurnen][$year] ?? null;
+    $value_naefels = $cinemas_mun_totals[$naefels][$year] ?? null;
+
+    $cinemas_mun_totals[$niederurnen][$year] = ($value_niederurnen === null && $value_naefels === null)
+        ? null
+        : ($value_niederurnen ?? 0) + ($value_naefels ?? 0);
+}
+
+for ($year = 2011; $year <= 2025; $year++) {
+    $cinemas_mun_totals[$niederurnen][$year] = $cinemas_mun_totals[$glarus_nord][$year] ?? null;
+}
+
+unset($cinemas_mun_totals[$naefels], $cinemas_mun_totals[$glarus_nord]);
+
+// ♡ combine Montana (6243) into Chermignon (6234) by summing the values for each year 1966-2016, then use ONLY the values of Crans-Montana (6253) for each year 2017-2025
+$chermignon = 6234;
+$montana = 6243;
+$crans_montana = 6253;
+
+for ($year = 1966; $year <= 2016; $year++) {
+    $value_chermignon = $cinemas_mun_totals[$chermignon][$year] ?? null;
+    $value_montana = $cinemas_mun_totals[$montana][$year] ?? null;
+
+    $cinemas_mun_totals[$chermignon][$year] = ($value_chermignon === null && $value_montana === null)
+        ? null
+        : ($value_chermignon ?? 0) + ($value_montana ?? 0);
+}
+
+for ($year = 2017; $year <= 2025; $year++) {
+    $cinemas_mun_totals[$chermignon][$year] = $cinemas_mun_totals[$crans_montana][$year] ?? null;
+}
+
+unset($cinemas_mun_totals[$montana], $cinemas_mun_totals[$crans_montana]);
+
+// ♡ combine Fleurier (6506) and Travers (6510) into Couvet (6505) by summing the values for each year 1966-2008, then use ONLY the values of Val-de-Travers (6512) for each year 2009-2025
+$couvet = 6505;
+$fleurier = 6506;
+$travers = 6510;
+$val_de_travers = 6512;
+
+for ($year = 1966; $year <= 2008; $year++) {
+    $value_couvet = $cinemas_mun_totals[$couvet][$year] ?? null;
+    $value_fleurier = $cinemas_mun_totals[$fleurier][$year] ?? null;
+    $value_travers = $cinemas_mun_totals[$travers][$year] ?? null;
+
+    $cinemas_mun_totals[$couvet][$year] = ($value_couvet === null && $value_fleurier === null && $value_travers === null)
+        ? null
+        : ($value_couvet ?? 0) + ($value_fleurier ?? 0) + ($value_travers ?? 0);
+}
+
+for ($year = 2009; $year <= 2025; $year++) {
+    $cinemas_mun_totals[$couvet][$year] = $cinemas_mun_totals[$val_de_travers][$year] ?? null;
+}
+
+unset($cinemas_mun_totals[$fleurier], $cinemas_mun_totals[$travers], $cinemas_mun_totals[$val_de_travers]);
 
 // ♡ get coordinates of municipalities via bfs code
 
