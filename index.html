@@ -20,8 +20,75 @@
 <main class="viewport">
 
     <div class="slides" id="slides">
+        <!-- Autoren -->
+        <section
+                class="slide slide--about"
+                aria-labelledby="aboutHeading"
+                inert
+        >
+            <div class="about-layout">
+                <div class="about-header">
+                    <p class="chapter-number">Über uns</p>
 
-        <!-- SEITE 1 -->
+                    <h2 id="aboutHeading">
+                        Das Team hinter<br>
+                        dem Projekt
+                    </h2>
+                </div>
+
+                <div class="team-grid">
+
+                    <article class="team-member">
+                        <div class="team-image-placeholder">
+                            Bild
+                        </div>
+
+                        <h3>Name 1</h3>
+
+                        <p>
+                            Funktion / Aufgabe im Projekt
+                        </p>
+                    </article>
+
+                    <article class="team-member">
+                        <div class="team-image-placeholder">
+                            Bild
+                        </div>
+
+                        <h3>Name 2</h3>
+
+                        <p>
+                            Funktion / Aufgabe im Projekt
+                        </p>
+                    </article>
+
+                    <article class="team-member">
+                        <div class="team-image-placeholder">
+                            Bild
+                        </div>
+
+                        <h3>Name 3</h3>
+
+                        <p>
+                            Funktion / Aufgabe im Projekt
+                        </p>
+                    </article>
+
+                    <article class="team-member">
+                        <div class="team-image-placeholder">
+                            Bild
+                        </div>
+
+                        <h3>Name 4</h3>
+
+                        <p>
+                            Funktion / Aufgabe im Projekt
+                        </p>
+                    </article>
+
+                </div>
+            </div>
+        </section>
         <!-- SLIDE 1 -->
         <section
                 class="slide slide--intro"
@@ -216,7 +283,7 @@
                         <label for="mapYear">
                             Jahr:
                             <output id="mapYearValue" for="mapYear">
-                                2025
+                                1966
                             </output>
                         </label>
 
@@ -284,6 +351,38 @@
                 </div>
             </div>
         </section>
+        <section
+                class="slide slide--conclusion"
+                aria-labelledby="conclusionHeading"
+                inert
+        >
+            <div class="split-layout">
+
+                <div class="split-visual">
+                    <div class="conclusion-image-placeholder">
+                        Bild
+                    </div>
+                </div>
+
+                <div class="split-copy">
+                    <p class="chapter-number">
+                        05 / Fazit
+                    </p>
+
+                    <h2 id="conclusionHeading">
+                        Was bleibt vom<br>
+                        Schweizer Kino?
+                    </h2>
+
+                    <p>
+                        Hier kommt euer Fazit hin. Ihr könnt hier die wichtigsten
+                        Erkenntnisse aus der Entwicklung der Schweizer Kinolandschaft
+                        zusammenfassen und einen kurzen Ausblick geben.
+                    </p>
+                </div>
+
+            </div>
+        </section>
     </div>
 
     <!-- Navigation bleibt an einer festen Position -->
@@ -297,9 +396,11 @@
             ← Zurück
         </button>
 
-        <span id="slideCounter" aria-live="polite" aria-atomic="true">
-            1 / 2
-        </span>
+        <span
+                id="slideCounter"
+                aria-live="polite"
+                aria-atomic="true"
+        ></span>
 
         <button
                 type="button"
