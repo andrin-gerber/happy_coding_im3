@@ -70,18 +70,32 @@ $municipality_names = $data2['dataset']['dimension']['Kanton (-) / Gemeinde (...
 
 // ♡ combine the two arrays: for each bfs code (from the array with amount of cinemas per municipality) go through every bfs code (from the array with the coordinates). when the bfs codes match, combine the two arrays and add it to a new array.
 $data_diagram2 = [];
+$missing_bfs_codes = []; // <— hier sammeln wir alle fehlenden BFS-Codes
+
 foreach ($cinemas_mun_totals as $bfs => $cinemas_of_municipality) {
+
+    $found = false;
+
     foreach ($bfs_codes_and_coordinates as $bfs_and_coordinate) {
         if ((int)$bfs === (int)$bfs_and_coordinate['GDENR']) {
+
             $data_diagram2[$bfs] = [
                 'name'        => $municipality_names[$bfs],
                 'coordinates' => $bfs_and_coordinate,
                 'cinemas'     => $cinemas_of_municipality,
             ];
-            break; // treffer gefunden, innere schleife beenden
+
+            $found = true;
+            break;
         }
     }
+
+    if (!$found) {
+        echo $bfs . " Gemeinde nicht gefunden\n";
+        $missing_bfs_codes[] = $bfs; // <— hier speichern
+    }
 }
+
 
 
 // ✧ ─────────── diagram 3 ────────────── ✧
@@ -133,5 +147,6 @@ foreach ($data_diagram3_part1 as $key => $data_diagram3_part1_mun) {
 return [
     'cinemas_per_year' => $cinemas_per_year,
     'data_diagram2'    => $data_diagram2,
-    'data_diagram3'    => $data_diagram3
+    'data_diagram3'    => $data_diagram3,
+    'missing_bfs_codes' => $missing_bfs_codes
 ];
