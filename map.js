@@ -13,6 +13,46 @@ async function createCinemaMap(diagram2) {
         return;
     }
 
+    const validYears = [
+        ...new Set(
+            diagram2.flatMap(item =>
+                Object.keys(item)
+                    .filter(key => /^\d{4}$/.test(key))
+                    .map(Number)
+            )
+        )
+    ]
+        .filter(year =>
+            diagram2.some(item => {
+                const value = item[String(year)];
+
+                return (
+                    value !== null &&
+                    value !== undefined
+                );
+            })
+        )
+        .sort((a, b) => a - b);
+
+
+    if (validYears.length === 0) {
+        status.textContent =
+            "Keine Jahresdaten vorhanden.";
+
+        return;
+    }
+
+
+// Slider verwendet jetzt Positionen,
+// nicht direkt Jahreszahlen.
+    slider.min = 0;
+    slider.max = validYears.length - 1;
+    slider.step = 1;
+    slider.value = validYears.length - 1;
+
+    yearOutput.value =
+        validYears[validYears.length - 1];
+
 
     // ================================
     // MAP ERSTELLEN
@@ -105,7 +145,8 @@ async function createCinemaMap(diagram2) {
     // ================================
 
     function updateYear() {
-        const year = slider.value;
+        const yearIndex = Number(slider.value);
+        const year = validYears[yearIndex];
 
         yearOutput.value = year;
 

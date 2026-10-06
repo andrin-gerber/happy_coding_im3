@@ -8,6 +8,9 @@ const counter = document.querySelector("#slideCounter");
 
 let activeSlide = 0;
 
+const ABOUT_SLIDE_INDEX = 0;
+const INTRO_SLIDE_INDEX = 1;
+
 /* =========================================
    PARALLAX
    ========================================= */
@@ -61,10 +64,15 @@ function goToSlide(index) {
         slide.inert = index !== activeSlide;
     });
 
-    previousButton.disabled = activeSlide === 0;
+    previousButton.disabled = activeSlide === ABOUT_SLIDE_INDEX;
     nextButton.disabled = activeSlide === slides.length - 1;
 
-    counter.textContent = `${activeSlide + 1} / ${slides.length}`;
+    if (activeSlide === ABOUT_SLIDE_INDEX) {
+        counter.textContent = "Über uns";
+    } else {
+        counter.textContent =
+            `${activeSlide} / ${slides.length - 1}`;
+    }
 
     // Falls der gerade fokussierte Button deaktiviert wurde,
     // wandert der Fokus zum anderen Navigationsbutton.
@@ -584,7 +592,7 @@ motionQuery.addEventListener(
     updateMotionSettings
 );
 
-goToSlide(0);
+goToSlide(INTRO_SLIDE_INDEX);
 
 const chartCanvas = document.querySelector("#cinemaChart");
 
