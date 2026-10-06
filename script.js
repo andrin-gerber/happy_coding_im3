@@ -592,7 +592,16 @@ motionQuery.addEventListener(
     updateMotionSettings
 );
 
+// Start directly on the intro without animation
+slidesContainer.style.transition = "none";
+
 goToSlide(INTRO_SLIDE_INDEX);
+
+// Force the browser to apply the initial position
+void slidesContainer.offsetWidth;
+
+// Restore the normal slide animation
+slidesContainer.style.transition = "";
 
 const chartCanvas = document.querySelector("#cinemaChart");
 
@@ -777,6 +786,46 @@ function groupScatterPoints(data, hallKey, cinemaKey) {
     return [...groups.values()];
 }
 
+const SCATTER_POINT_SIZE = {
+    desktop: {
+        base: 4,
+        multiplier: 2,
+        max: 18
+    },
+
+    mobile: {
+        base: 1.5,
+        multiplier: 0.8,
+        max: 7
+    }
+};
+
+
+function getScatterRadius(context, hover = false) {
+    const count = context.raw?.count ?? 1;
+
+    const mobile =
+        window.matchMedia("(max-width: 700px)").matches;
+
+    const settings = mobile
+        ? SCATTER_POINT_SIZE.mobile
+        : SCATTER_POINT_SIZE.desktop;
+
+    let radius =
+        settings.base +
+        Math.sqrt(count) * settings.multiplier;
+
+    radius = Math.min(
+        radius,
+        settings.max
+    );
+
+    if (hover) {
+        radius += 2;
+    }
+
+    return radius;
+}
 
 function createScatterChart(diagram3) {
     const scatterCanvas = document.querySelector("#scatterChart");
@@ -818,19 +867,20 @@ function createScatterChart(diagram3) {
                     label: "1966",
                     data: points1966,
 
-                    backgroundColor: "rgba(255, 255, 255, 0.45)",
-                    borderColor: "rgba(255, 255, 255, 0.8)",
+                    backgroundColor:
+                        "rgba(255, 255, 255, 0.45)",
+
+                    borderColor:
+                        "rgba(255, 255, 255, 0.8)",
+
+                    clip: 0,
 
                     pointRadius: function(context) {
-                        const count = context.raw.count;
-
-                        return 4 + Math.sqrt(count) * 3;
+                        return getScatterRadius(context);
                     },
 
                     pointHoverRadius: function(context) {
-                        const count = context.raw.count;
-
-                        return 6 + Math.sqrt(count) * 3;
+                        return getScatterRadius(context, true);
                     }
                 },
 
@@ -838,19 +888,20 @@ function createScatterChart(diagram3) {
                     label: "2025",
                     data: points2025,
 
-                    backgroundColor: "rgba(255, 180, 180, 0.65)",
-                    borderColor: "rgba(255, 180, 180, 1)",
+                    backgroundColor:
+                        "rgba(255, 180, 180, 0.65)",
+
+                    borderColor:
+                        "rgba(255, 180, 180, 1)",
+
+                    clip: 0,
 
                     pointRadius: function(context) {
-                        const count = context.raw.count;
-
-                        return 4 + Math.sqrt(count) * 3;
+                        return getScatterRadius(context);
                     },
 
                     pointHoverRadius: function(context) {
-                        const count = context.raw.count;
-
-                        return 6 + Math.sqrt(count) * 3;
+                        return getScatterRadius(context, true);
                     }
                 }
             ]
