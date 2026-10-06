@@ -667,20 +667,21 @@ function createCinemaChart(diagram1) {
                     display: false
                 },
 
-            title: {
-                display: true,
-                text: "Entwicklung der Anzahl Kinos von 1968 bis 2025",
-                color: "#ffffff",
-                font: {
-                    size: 16,
-                    weight: "normal"
+                title: {
+                    display: true,
+                    text: "Entwicklung der Anzahl Kinos von 1966 bis 2025",                       // dein Text bleibt unverändert
+                    color: "#ffffff",
+                    font: {
+                        family: '"Nova Flat", system-ui',   // dieselbe Schrift wie die h2-Titel
+                        size: 24,                           // vorher: 16
+                        weight: "normal"
+                    },
+                    padding: {
+                        bottom: 20
+                    },
+                    align: "start"
+                }
                 },
-                padding: {
-                    bottom: 20
-                },
-                align: "start"
-            }
-        },
 
 
 
@@ -922,10 +923,11 @@ function createScatterChart(diagram3) {
 
                 title: {
                     display: true,
-                    text: "Kinosäle und Kinos pro Gemeinde: 1966 vs. 2025",
+                    text: "Kapazitätsentwicklung im Schweizer Kinosektor (1966–2025)",
                     color: "#ffffff",
                     font: {
-                        size: 16,
+                        family: '"Nova Flat", system-ui',   // dieselbe Schrift wie die h2-Titel
+                        size: 24,                           // vorher: 16
                         weight: "normal"
                     },
                     padding: {

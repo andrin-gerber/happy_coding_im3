@@ -768,10 +768,9 @@ body {
 }
 
 .split-copy > p:not(.chapter-number) {
-    margin: 0;
-
-    font-size: clamp(1rem, 1.3vw, 1.2rem);
-    line-height: 1.5;
+    font-size: clamp(0.85rem, 1.15vw, 1.05rem);
+    line-height: 1.3;
+    letter-spacing: 0.025em;
     color: #ddd;
 }
 
@@ -1073,7 +1072,7 @@ body {
 .about-layout {
     width: 100%;
     height: 100%;
-    padding: 8vh 7vw;
+    padding: 5vh 5vw;
 
     display: flex;
     flex-direction: column;
@@ -1084,11 +1083,11 @@ body {
 .team-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
+    gap: 1rem;
 }
 
 .team-member h3 {
-    margin: 1rem 0 0.4rem;
+    margin: 0.5rem 0 0.4rem;
 }
 
 .team-member p {
@@ -1107,6 +1106,23 @@ body {
     color: #777777;
 }
 
+.about-header {
+    text-align: center;
+}
+
+.about-text {
+    max-width: 70ch;
+    margin: 1rem auto 0;
+    line-height: 1.6;
+}
+
+.team-member {
+    text-align: center;
+}
+
+.team-image-placeholder {
+    margin: 0 auto;
+}
 
 /* =========================
    CONCLUSION
@@ -1124,6 +1140,21 @@ body {
     color: #777777;
 }
 
+/* Fazit-Slide: mehr Platz für den langen Text */
+.slide--conclusion .split-layout {
+    inset: 8% 6% 14%;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+}
+
+.slide--conclusion .split-copy h2 {
+    margin-bottom: 1rem;
+    font-size: clamp(1.2rem, 2vw, 2.2rem);
+    line-height: 1.15;
+}
+
+.slide--conclusion .conclusion-image-placeholder {
+    min-height: 0;
+}
 
 @media (max-width: 700px) {
     .team-grid {
