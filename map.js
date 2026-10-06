@@ -1,3 +1,36 @@
+const MAP_POINT_SIZE = {
+    desktop: {
+        base: 4,
+        multiplier: 2,
+        max: 18
+    },
+
+    mobile: {
+        base: 2,
+        multiplier: 1,
+        max: 7
+    }
+};
+
+
+function getMapPointRadius(count) {
+    const mobile =
+        window.matchMedia("(max-width: 700px)").matches;
+
+    const settings = mobile
+        ? MAP_POINT_SIZE.mobile
+        : MAP_POINT_SIZE.desktop;
+
+    return Math.min(
+        settings.base +
+        count * settings.multiplier,
+
+        settings.max
+    );
+}
+
+
+
 async function createCinemaMap(diagram2) {
     const container = document.querySelector("#swissMap");
     const slider = document.querySelector("#mapYear");
@@ -12,6 +45,47 @@ async function createCinemaMap(diagram2) {
         status.textContent = "Leaflet konnte nicht geladen werden.";
         return;
     }
+
+    const validYears = [
+        ...new Set(
+            diagram2.flatMap(item =>
+                Object.keys(item)
+                    .filter(key => /^\d{4}$/.test(key))
+                    .map(Number)
+            )
+        )
+    ]
+        .filter(year =>
+            diagram2.some(item => {
+                const value = item[String(year)];
+
+                return (
+                    value !== null &&
+                    value !== undefined
+                );
+            })
+        )
+        .sort((a, b) => a - b);
+
+
+    if (validYears.length === 0) {
+        status.textContent =
+            "Keine Jahresdaten vorhanden.";
+
+        return;
+    }
+
+
+// Slider verwendet jetzt Positionen,
+// nicht direkt Jahreszahlen.
+    slider.min = 0;
+    slider.max = validYears.length - 1;
+    slider.step = 1;
+
+// Start at first available year
+    slider.value = 0;
+
+    yearOutput.value = validYears[0];
 
 
     // ================================
@@ -105,7 +179,8 @@ async function createCinemaMap(diagram2) {
     // ================================
 
     function updateYear() {
-        const year = slider.value;
+        const yearIndex = Number(slider.value);
+        const year = validYears[yearIndex];
 
         yearOutput.value = year;
 
@@ -153,10 +228,8 @@ async function createCinemaMap(diagram2) {
 
 
             // Grössere Anzahl Kinos = grösserer Kreis
-            const radius = Math.min(
-                4 + count * 2,
-                18
-            );
+            const radius = getMapPointRadius(count);
+
 
 
             const marker = L.circleMarker(

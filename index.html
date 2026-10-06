@@ -20,8 +20,79 @@
 <main class="viewport">
 
     <div class="slides" id="slides">
+        <!-- Autoren -->
+        <section
+                class="slide slide--about"
+                aria-labelledby="aboutHeading"
+                inert
+        >
+            <div class="about-layout">
+                <div class="about-header">
+                    <h2 id="aboutHeading">
+                        Das Team hinter dem Projekt:
+                    </h2>
+                </div>
+                <div class="about-header">
+                    <p class="chapter-number">Über uns</p>
 
-        <!-- SEITE 1 -->
+                    <p class="about-text">
+                        Dieses Datenjournalismus-Projekt analysiert den tiefgreifenden Wandel der Schweizer Kinolandschaft von den 1960er-Jahren bis in die Gegenwart. Anhand historischer und aktueller Daten machen wir sichtbar, wie sich Standorte verlagert, Kapazitäten gebündelt und Sehgewohnheiten verändert haben.
+                    </p>
+                </div>
+
+                <div class="team-grid">
+
+                    <article class="team-member">
+                        <div class="team-image-placeholder">
+                            Bild
+                        </div>
+
+                        <h3>Andrin Gerber</h3>
+
+                        <p>
+                            Backend Developer
+                        </p>
+                    </article>
+
+                    <article class="team-member">
+                        <div class="team-image-placeholder">
+                            Bild
+                        </div>
+
+                        <h3>Benita Gautschi</h3>
+
+                        <p>
+                            Backend Developer
+                        </p>
+                    </article>
+
+                    <article class="team-member">
+                        <div class="team-image-placeholder">
+                            Bild
+                        </div>
+
+                        <h3>Andri Csetreki</h3>
+
+                        <p>
+                            Frontend Developer
+                        </p>
+                    </article>
+
+                    <article class="team-member">
+                        <div class="team-image-placeholder">
+                            Bild
+                        </div>
+
+                        <h3>Jan Beatrix</h3>
+
+                        <p>
+                            Frontend Developer
+                        </p>
+                    </article>
+
+                </div>
+            </div>
+        </section>
         <!-- SLIDE 1 -->
         <section
                 class="slide slide--intro"
@@ -151,12 +222,15 @@
 
                 <div class="history-copy">
                     <h2 id="historyHeading">
-                        Wie hat sich die Schweizer Kinolandschaft<br>
-                        seit 1966 verändert?
+                        Das grosse Saalsterben: Wie die Schweiz ihre Kinos verlor und neu erfand
                     </h2>
 
                     <p>
-                        Das Kino kam Ende des 19. Jahrhunderts in die Schweiz. Bereits 1896 wurden in verschiedenen Schweizer Städten erste Filmvorführungen gezeigt. Damals waren die Filme noch sehr kurz, stumm und meist Teil von Jahrmärkten oder anderen Veranstaltungen. Mit der Zeit wurden feste Kinosäle eröffnet, und immer mehr Menschen begeisterten sich für die bewegten Bilder. So entwickelte sich das Kino zu einer beliebten Form der Unterhaltung und wurde ein wichtiger Teil der Schweizer Kultur.
+                        Es gab eine Zeit, da gehörte der Gang ins Kino zum alltäglichen Dorf- und Stadtbild der Schweiz wie die Poststelle oder der Kirchturm. Ob im alpinen Bergtal, in der Agglomeration oder an den belebten Boulevards von Zürich, Basel und Genf: Die weisse Leinwand war das Fenster zur Welt.
+
+                        In der goldenen Ära der 1950er- und 1960er-Jahre erlebte das Kino hierzulande seinen historischen Höhepunkt. Filme wie «Heidi» oder internationale Hollywood-Produktionen lockten Millionen vor die Leinwände. Doch mit dem Aufkommen des Farbfernsehens, gefolgt von Videokassetten in den 1980er-Jahren und schliesslich dem Internet- und Streaming-Boom des 21. Jahrhunderts, geriet das Geschäftsmodell zunehmend unter Druck.
+
+                        Wer heute vom «Kinosterben» spricht, meint meist nicht das Verschwinden des Films an sich, sondern den schleichenden Verlust eines zentralen Kultur- und Begegnungsorts. Die Daten der letzten sechs Jahrzehnte zeichnen ein klares Bild: Die Schweizer Kinolandschaft ist massiv geschrumpft und hat sich dabei von Grund auf transformiert.
                     </p>
                 </div>
             </div>
@@ -216,7 +290,7 @@
                         <label for="mapYear">
                             Jahr:
                             <output id="mapYearValue" for="mapYear">
-                                2025
+                                1966
                             </output>
                         </label>
 
@@ -284,6 +358,38 @@
                 </div>
             </div>
         </section>
+        <section
+                class="slide slide--conclusion"
+                aria-labelledby="conclusionHeading"
+                inert
+        >
+            <div class="split-layout">
+
+                <div class="split-visual">
+                    <div class="conclusion-image-placeholder">
+                        Bild
+                    </div>
+                </div>
+
+                <div class="split-copy">
+                    <p class="chapter-number">
+                        05 / Fazit
+                    </p>
+
+                    <h2 id="conclusionHeading">
+                        Was bleibt vom<br>
+                        Schweizer Kino?
+                    </h2>
+
+                    <p>
+                        Hier kommt euer Fazit hin. Ihr könnt hier die wichtigsten
+                        Erkenntnisse aus der Entwicklung der Schweizer Kinolandschaft
+                        zusammenfassen und einen kurzen Ausblick geben.
+                    </p>
+                </div>
+
+            </div>
+        </section>
     </div>
 
     <!-- Navigation bleibt an einer festen Position -->
@@ -297,9 +403,11 @@
             ← Zurück
         </button>
 
-        <span id="slideCounter" aria-live="polite" aria-atomic="true">
-            1 / 2
-        </span>
+        <span
+                id="slideCounter"
+                aria-live="polite"
+                aria-atomic="true"
+        ></span>
 
         <button
                 type="button"
