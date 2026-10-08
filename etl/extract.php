@@ -404,6 +404,9 @@ foreach ($data_diagram3_part1 as $key => $data_diagram3_part1_mun) {
     }
 }
 
+print_r($data_diagram2['5005']);
+print_r($data_diagram2['5002']);
+
 print_r(count($data_diagram2));
 echo "\n";
 print_r(count($data_diagram3));
