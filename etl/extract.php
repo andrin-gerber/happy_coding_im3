@@ -310,6 +310,77 @@ foreach ($municipalityIds as $municipalityId){
     }
 }
 
+// ♡ fix municipalities (fusions) for halls – only 1966 and 2025 are relevant
+$years_d3 = [1966, 2025];
+
+// ♡ helper: sum values, but return null if all values are null
+function sum_or_null(array $values) {
+    $values = array_filter($values, fn($v) => $v !== null);
+    return count($values) ? array_sum($values) : null;
+}
+
+// ♡ type 1: old municipality has the values until the fusion, the new one from the fusion on
+// [old, new]
+$fusions_fill = [
+    [682,  717],   // Bévilard -> Valbirse
+    [3336, 3340],  // Rapperswil -> Rapperswil-Jona
+    [5793, 5805],  // Oron-la-Ville -> Oron
+    [5782, 5806],  // Carrouge -> Jorat-Mézières
+    [5034, 5048],  // Corzoneso -> Acquarossa
+    [6031, 6037],  // Bagnes -> Val-de-Bagnes
+    [467,  6711],  // Delémont (BE) -> Delémont (JU)
+    [522,  6754],  // Le Noirmont (BE) -> Le Noirmont (JU)
+    [513,  6743],  // Les Breuleux (BE) -> Les Breuleux (JU)
+    [830,  6800],  // Porrentruy (BE) -> Porrentruy (JU)
+];
+
+foreach ($fusions_fill as [$old, $new]) {
+    if (isset($data_diagram3_part1[$old], $data_diagram3_part1[$new])) {
+        foreach ($years_d3 as $year) {
+            $data_diagram3_part1[$old][$year] =
+                $data_diagram3_part1[$old][$year] ?? $data_diagram3_part1[$new][$year] ?? null;
+        }
+        unset($data_diagram3_part1[$new]);
+    }
+}
+
+// ♡ type 2: sum several municipalities until a certain year, afterwards use the new (merged) municipality
+// main = municipality that stays, add = municipalities summed into it,
+// sum_until = last year that is summed, successor = merged municipality used afterwards (null = main keeps its own values)
+$fusions_sum = [
+    ['main' => 1627, 'add' => [1603],        'sum_until' => 2010, 'successor' => null], // Braunwald -> Schwanden
+    ['main' => 1622, 'add' => [1619],        'sum_until' => 2010, 'successor' => 1630], // Näfels -> Niederurnen, then Glarus Nord
+    ['main' => 6234, 'add' => [6243],        'sum_until' => 2016, 'successor' => 6253], // Montana -> Chermignon, then Crans-Montana
+    ['main' => 6505, 'add' => [6506, 6510],  'sum_until' => 2008, 'successor' => 6512], // Fleurier + Travers -> Couvet, then Val-de-Travers
+];
+
+foreach ($fusions_sum as $f) {
+    $main = $f['main'];
+
+    foreach ($years_d3 as $year) {
+        if ($year <= $f['sum_until']) {
+            $values = [$data_diagram3_part1[$main][$year] ?? null];
+            foreach ($f['add'] as $add) {
+                $values[] = $data_diagram3_part1[$add][$year] ?? null;
+            }
+            $data_diagram3_part1[$main][$year] = sum_or_null($values);
+        } elseif ($f['successor'] !== null) {
+            $data_diagram3_part1[$main][$year] = $data_diagram3_part1[$f['successor']][$year] ?? null;
+        }
+        // successor === null: main keeps its own value
+    }
+
+    foreach ($f['add'] as $add) {
+        unset($data_diagram3_part1[$add]);
+    }
+    if ($f['successor'] !== null) {
+        unset($data_diagram3_part1[$f['successor']]);
+    }
+}
+
+
+
+
 // ♡ PART 2: combine the amount of cinemas per municipality in the two years with the array above
 $data_diagram3 = [];
 foreach ($data_diagram3_part1 as $key => $data_diagram3_part1_mun) {
@@ -332,6 +403,12 @@ foreach ($data_diagram3_part1 as $key => $data_diagram3_part1_mun) {
         }
     }
 }
+
+print_r(count($data_diagram2));
+echo "\n";
+print_r(count($data_diagram3));
+echo "\n";
+print_r($data_diagram3);
 
 return [
     'cinemas_per_year' => $cinemas_per_year,
