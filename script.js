@@ -845,6 +845,7 @@ function createScatterChart(diagram3) {
         "cinema_mun_total_1966"
     );
 
+    
 
     // 2025
     const points2025 = groupScatterPoints(
@@ -853,10 +854,20 @@ function createScatterChart(diagram3) {
         "cinema_mun_total_2025"
     );
 
+    // NEU: Gemeinsames Maximum der X-Achse
+    const maxX = Math.ceil(
+        Math.max(
+            ...points1966.map(point => point.x),
+            ...points2025.map(point => point.x)
+        ) / 5
+    ) * 5;
+
+    // Bestehende Berechnung der Y-Achse
     const maxY = Math.max(
         ...points1966.map(point => point.y),
         ...points2025.map(point => point.y)
     );
+
 
     scatterChart = new Chart(scatterCanvas, {
         type: "scatter",
@@ -887,6 +898,7 @@ function createScatterChart(diagram3) {
                 {
                     label: "2025",
                     data: points2025,
+
 
                     backgroundColor:
                         "rgba(255, 180, 180, 0.65)",
@@ -954,10 +966,14 @@ function createScatterChart(diagram3) {
                 x: {
                     type: "linear",
                     position: "bottom",
+                    min: 0,
+                    max: maxX,
 
                     ticks: {
                         color: "#aaaaaa",
-                        precision: 0
+                        precision: 0,
+                        stepSize: 5,
+                        autoSkip: false,
                     },
 
                     grid: {
