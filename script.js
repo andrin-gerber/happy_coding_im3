@@ -639,10 +639,9 @@ function createCinemaChart(diagram1) {
                 tension: 0,
                 fill: false,
 
-                // Keine Punkte
-                pointRadius: 0,
-                pointHoverRadius: 0,
-                pointHitRadius: 0
+                pointRadius: 0,       // No dots normally
+                pointHoverRadius: 6,  // Show a dot on hover
+                pointHitRadius: 12    // Easier mouse targeting
             }]
         },
 
