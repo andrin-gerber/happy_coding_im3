@@ -93,12 +93,14 @@ async function createCinemaMap(diagram2) {
     // ================================
 
     const map = L.map(container, {
-        zoomControl: false,
+        zoomControl: true,
+        dragging: true,
+        touchZoom: true,
+        maxZoom: 12,
+
         scrollWheelZoom: false,
-        dragging: false,
         doubleClickZoom: false,
         boxZoom: false,
-        touchZoom: false,
         keyboard: false,
         zoomSnap: 0
     }).setView([46.8, 8.2], 7);
