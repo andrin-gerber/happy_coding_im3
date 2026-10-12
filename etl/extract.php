@@ -27,7 +27,7 @@ $json2 = file_get_contents('../data/diagram2.json');
 $data2 = json_decode($json2, true);
 
 // ♡ get the years from json2
-$years = $data2['dataset']['dimension']['Jahr']['category']['label'];
+$years2 = $data2['dataset']['dimension']['Jahr']['category']['label'];
 
 // ♡ get amount of cinemas per year for each municipality
 $values = $data2['dataset']['value'];
@@ -41,7 +41,7 @@ $cinemas_mun_totals = [];
 $i = 0;
 foreach ($municipalityIds as $gdenr) {
 
-    foreach ($years as $year) {
+    foreach ($years2 as $year) {
         $cinemas_mun_totals[$gdenr][$year] = $values[$i]; //nimm jedi gmeind, gang jedes jahr dure und mach en neue array für die gmeint mit de bfs nummere und em jahr und füeg det d azahl kinos wos i dem jahr i dere gmeind ge het i, das isch de "values", und gang alli values dure drum i++. zB: nimm adliswil bzw de bfs code devo - was i dem fall 131 isch, denn gang is jahr 1966, erstell en array mit de azahl kinos wos denn in adliswil ge het, indem du de value 0 (i=0) nimmsch. denn gang is nöchste jahr und nimm de nöchst value (i=1)
         $i++;
     }
