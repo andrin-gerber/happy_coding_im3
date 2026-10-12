@@ -14,6 +14,7 @@ $data1 = json_decode($json1, true);
 $years = $data1['dataset']['dimension']['Jahr']['category']['label'];
 $cinema_ch_totals = $data1['dataset']['value'];
 
+
 $cinemas_per_year = array_combine($years, $cinema_ch_totals);
 
 
@@ -46,7 +47,9 @@ foreach ($municipalityIds as $gdenr) {
     }
 }
 
-$cinemas_mun_totals_unfused = $cinemas_mun_totals;
+$cinemas_mun_totals_unfused = $cinemas_mun_totals; //for diagramm 3 -> get the amount of cinemas per year per municipality
+
+//Combine the municipality entries of the municipalities that originally belonged to Bern and later merged into the canton of Jura.
 
 // ♡ merge Delémont (BE) (467) into Delémont (JU) (6711): Delémont (BE) (467) has the values until 1978, Delémont (JU) (6711) from 1979.
 $delemont_be = 467;
@@ -143,7 +146,6 @@ foreach ($cinemas_mun_totals as $bfs => $cinemas_of_municipality) {
     }
 }
 
-
 // ✧ ─────────── diagram 3 ────────────── ✧
 
 // ♡ get total amount of halls per municipality in 1966 and 2025
@@ -189,13 +191,6 @@ foreach ($data_diagram3_part1 as $key => $data_diagram3_part1_mun) {
         }
     }
 }
-
-
-print_r(count($data_diagram2));
-echo "\n";
-print_r(count($data_diagram3));
-echo "\n";
-print_r($data_diagram3);
 
 return [
     'cinemas_per_year' => $cinemas_per_year,
