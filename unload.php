@@ -99,8 +99,6 @@ $statement3 = $pdo->prepare($sql3);
 $statement3->execute();
 $rows3 = $statement3->fetchAll();
 
-
-print_r($rows2);
 echo json_encode([
     'diagram1' => $rows1,
     'diagram2' => $rows2,

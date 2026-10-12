@@ -46,6 +46,8 @@ foreach ($municipalityIds as $gdenr) {
     }
 }
 
+$cinemas_mun_totals_unfused = $cinemas_mun_totals;
+
 // ♡ merge Delémont (BE) (467) into Delémont (JU) (6711): Delémont (BE) (467) has the values until 1978, Delémont (JU) (6711) from 1979.
 $delemont_be = 467;
 $delemont_ju = 6711;
@@ -107,7 +109,6 @@ while (($row = fgetcsv($handle , null , ',' , '"' , '"')) !== false) {
 }
 fclose($handle);
 
-print_r($bfs_codes_and_coordinates);
 
 // ♡ combine coordinates with municipalities
 
@@ -177,20 +178,18 @@ foreach ($data_diagram3_part1 as $key => $data_diagram3_part1_mun) {
         ];
     }
     // ♡ combine the two arrays if the bfs code matches
-    foreach ($data_diagram2 as $municipality_cinema) {
-        if ((int)$municipality_cinema['coordinates']['GDENR'] === $key) {
+    foreach ($cinemas_mun_totals_unfused as $bfs_key => $municipality_cinema) {
+        if ((int)$bfs_key === $key) {
             $data_diagram3[$key]['halls1966'] = $data_diagram3_part1_mun['1966'];
             $data_diagram3[$key]['halls2025'] = $data_diagram3_part1_mun['2025'];
-            $data_diagram3[$key]['cinemas1966'] = $municipality_cinema['cinemas']['1966'];
-            $data_diagram3[$key]['cinemas2025'] = $municipality_cinema['cinemas']['2025'];
+            $data_diagram3[$key]['cinemas1966'] = $municipality_cinema['1966'];
+            $data_diagram3[$key]['cinemas2025'] = $municipality_cinema['2025'];
 
             break;
         }
     }
 }
 
-print_r($data_diagram2['5005']);
-print_r($data_diagram2['5002']);
 
 print_r(count($data_diagram2));
 echo "\n";
