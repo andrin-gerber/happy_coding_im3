@@ -175,7 +175,7 @@ function sum_or_null(array $values) {
     return count($values) ? array_sum($values) : null;
 }
 
-// ♡ type 1: old municipality has the values until the fusion, the new one from the fusion on
+// ♡ type 1: old municipality has the values until the fusion, the new one from the fusion onwards
 // [old, new]
 $fusions_fill = [
     [682,  717],   // Bévilard -> Valbirse
