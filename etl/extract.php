@@ -57,48 +57,20 @@ $cinemas_mun_totals_unfused = $cinemas_mun_totals; //for diagramm 3 -> get the a
 
 //Combine the municipality entries of the municipalities that originally belonged to Bern and later merged into the canton of Jura.
 
-// ♡ merge Delémont (BE) (467) into Delémont (JU) (6711): Delémont (BE) (467) has the values until 1978, Delémont (JU) (6711) from 1979.
-$delemont_be = 467;
-$delemont_ju = 6711;
+$merges = [
+    467 => 6711,   // Delémont
+    522 => 6754,   // Le Noirmont
+    513 => 6743,   // Les Breuleux
+    830 => 6800,   // Porrentruy
+];
 
-if (isset($cinemas_mun_totals[$delemont_be], $cinemas_mun_totals[$delemont_ju])) {
-    foreach ($cinemas_mun_totals[$delemont_be] as $year => $value) {
-        $cinemas_mun_totals[$delemont_be][$year] = $value ?? $cinemas_mun_totals[$delemont_ju][$year] ?? null;
+foreach ($merges as $be => $ju) {
+    if (isset($cinemas_mun_totals[$be], $cinemas_mun_totals[$ju])) {
+        foreach ($cinemas_mun_totals[$be] as $year => $beValue) {
+            $cinemas_mun_totals[$be][$year] = $beValue ?? $cinemas_mun_totals[$ju][$year] ?? null; // prüft hat be einen wert, falls nein, nimm den von jura, falls auch keinen nimm "null"
+        }
+        unset($cinemas_mun_totals[$ju]);
     }
-    unset($cinemas_mun_totals[$delemont_ju]);
-}
-
-// ♡ merge Le Noirmont (BE) (522) into Le Noirmont (JU) (6754): Le Noirmont (BE) (522) has the values until 1978, Le Noirmont (JU) (6754) from 1979.
-$le_noirmont_be = 522;
-$le_noirmont_ju = 6754;
-
-if (isset($cinemas_mun_totals[$le_noirmont_be], $cinemas_mun_totals[$le_noirmont_ju])) {
-    foreach ($cinemas_mun_totals[$le_noirmont_be] as $year => $value) {
-        $cinemas_mun_totals[$le_noirmont_be][$year] = $value ?? $cinemas_mun_totals[$le_noirmont_ju][$year] ?? null;
-    }
-    unset($cinemas_mun_totals[$le_noirmont_ju]);
-}
-
-// ♡ merge Les Breuleux (BE) (513) into Les Breuleux (JU) (6743): Les Breuleux (BE) (513) has the values until 1978, Les Breuleux (JU) (6743) from 1979.
-$les_breuleux_be = 513;
-$les_breuleux_ju = 6743;
-
-if (isset($cinemas_mun_totals[$les_breuleux_be], $cinemas_mun_totals[$les_breuleux_ju])) {
-    foreach ($cinemas_mun_totals[$les_breuleux_be] as $year => $value) {
-        $cinemas_mun_totals[$les_breuleux_be][$year] = $value ?? $cinemas_mun_totals[$les_breuleux_ju][$year] ?? null;
-    }
-    unset($cinemas_mun_totals[$les_breuleux_ju]);
-}
-
-// ♡ merge Porrentruy (BE) (830) into Porrentruy (JU) (6800): Porrentruy (BE) (830) has the values until 1978, Porrentruy (JU) (6800) from 1979.
-$porrentruy_be = 830;
-$porrentruy_ju = 6800;
-
-if (isset($cinemas_mun_totals[$porrentruy_be], $cinemas_mun_totals[$porrentruy_ju])) {
-    foreach ($cinemas_mun_totals[$porrentruy_be] as $year => $value) {
-        $cinemas_mun_totals[$porrentruy_be][$year] = $value ?? $cinemas_mun_totals[$porrentruy_ju][$year] ?? null;
-    }
-    unset($cinemas_mun_totals[$porrentruy_ju]);
 }
 
 // ♡ get coordinates of municipalities via bfs code
