@@ -41,8 +41,9 @@ body {
 }
 
 .about-text {
-    margin-top: 1rem;
-    line-height: 1.6;
+    columns: 2;
+    column-gap: 2.5rem;
+    text-align: left;
 }
 
 /* --------------------------------------------------
