@@ -5,9 +5,29 @@ header('Content-Type: text/plain; charset=utf-8');
 
 // ✧ ─────────── import ────────────── ✧
 
+// ♡ get data from the json files
 function import_json_files(string $path):array {
     $json = file_get_contents($path);
     return json_decode($json, true);
+}
+
+// ♡ get data from the csv file
+
+function import_csv_file(string $path):array {
+    $handle = fopen($path , 'r');
+    $header = array_map('trim', fgetcsv($handle , null , ',' , '"' , ''));
+
+    $bfs_codes_and_coordinates = [];
+
+// ♡ combine the header and the values to the above array
+    while (($row = fgetcsv($handle , null , ',' , '"' , '"')) !== false) {
+        if ($row[0]==='') {
+            continue;
+        }
+        $bfs_codes_and_coordinates[]=array_combine($header, $row);
+    }
+    return $bfs_codes_and_coordinates;
+    fclose($handle);
 }
 
 // ✧ ─────────── diagram 1 ────────────── ✧
@@ -39,13 +59,13 @@ $years2 = $data2['dataset']['dimension']['Jahr']['category']['label'];
 $values = $data2['dataset']['value'];
 
 // ♡ get all the bfs codes of the municipalities. flip the array so the bfs codes are the values instead of the keys
-$municipalityIndex = $data2['dataset']['dimension']['Kanton (-) / Gemeinde (......)']['category']['index'];
-$municipalityIds = array_keys($municipalityIndex);
+$municipality_index = $data2['dataset']['dimension']['Kanton (-) / Gemeinde (......)']['category']['index'];
+$municipality_ids = array_keys($municipality_index);
 
 // ♡ create new array with bfs code -> the array contains the amount of cinemas in each municipality for every year
 $cinemas_mun_totals = [];
 $i = 0;
-foreach ($municipalityIds as $gdenr) {
+foreach ($municipality_ids as $gdenr) {
 
     foreach ($years2 as $year) {
         $cinemas_mun_totals[$gdenr][$year] = $values[$i]; //nimm jedi gmeind, gang jedes jahr dure und mach en neue array für die gmeint mit de bfs nummere und em jahr und füeg det d azahl kinos wos i dem jahr i dere gmeind ge het i, das isch de "values", und gang alli values dure drum i++. zB: nimm adliswil bzw de bfs code devo - was i dem fall 131 isch, denn gang is jahr 1966, erstell en array mit de azahl kinos wos denn in adliswil ge het, indem du de value 0 (i=0) nimmsch. denn gang is nöchste jahr und nimm de nöchst value (i=1)
@@ -55,71 +75,27 @@ foreach ($municipalityIds as $gdenr) {
 
 $cinemas_mun_totals_unfused = $cinemas_mun_totals; //for diagramm 3 -> get the amount of cinemas per year per municipality
 
-//Combine the municipality entries of the municipalities that originally belonged to Bern and later merged into the canton of Jura.
+// ♡ combine the municipality entries of the municipalities that originally belonged to Bern and later merged into the canton of Jura.
 
-// ♡ merge Delémont (BE) (467) into Delémont (JU) (6711): Delémont (BE) (467) has the values until 1978, Delémont (JU) (6711) from 1979.
-$delemont_be = 467;
-$delemont_ju = 6711;
+$merges = [
+    467 => 6711,   // Delémont
+    522 => 6754,   // Le Noirmont
+    513 => 6743,   // Les Breuleux
+    830 => 6800,   // Porrentruy
+];
 
-if (isset($cinemas_mun_totals[$delemont_be], $cinemas_mun_totals[$delemont_ju])) {
-    foreach ($cinemas_mun_totals[$delemont_be] as $year => $value) {
-        $cinemas_mun_totals[$delemont_be][$year] = $value ?? $cinemas_mun_totals[$delemont_ju][$year] ?? null;
+foreach ($merges as $be => $ju) {
+    if (isset($cinemas_mun_totals[$be], $cinemas_mun_totals[$ju])) {
+        foreach ($cinemas_mun_totals[$be] as $year => $beValue) {
+            $cinemas_mun_totals[$be][$year] = $beValue ?? $cinemas_mun_totals[$ju][$year] ?? null; // prüft hat be einen wert, falls nein, nimm den von jura, falls auch keinen nimm "null"
+        }
+        unset($cinemas_mun_totals[$ju]);
     }
-    unset($cinemas_mun_totals[$delemont_ju]);
 }
-
-// ♡ merge Le Noirmont (BE) (522) into Le Noirmont (JU) (6754): Le Noirmont (BE) (522) has the values until 1978, Le Noirmont (JU) (6754) from 1979.
-$le_noirmont_be = 522;
-$le_noirmont_ju = 6754;
-
-if (isset($cinemas_mun_totals[$le_noirmont_be], $cinemas_mun_totals[$le_noirmont_ju])) {
-    foreach ($cinemas_mun_totals[$le_noirmont_be] as $year => $value) {
-        $cinemas_mun_totals[$le_noirmont_be][$year] = $value ?? $cinemas_mun_totals[$le_noirmont_ju][$year] ?? null;
-    }
-    unset($cinemas_mun_totals[$le_noirmont_ju]);
-}
-
-// ♡ merge Les Breuleux (BE) (513) into Les Breuleux (JU) (6743): Les Breuleux (BE) (513) has the values until 1978, Les Breuleux (JU) (6743) from 1979.
-$les_breuleux_be = 513;
-$les_breuleux_ju = 6743;
-
-if (isset($cinemas_mun_totals[$les_breuleux_be], $cinemas_mun_totals[$les_breuleux_ju])) {
-    foreach ($cinemas_mun_totals[$les_breuleux_be] as $year => $value) {
-        $cinemas_mun_totals[$les_breuleux_be][$year] = $value ?? $cinemas_mun_totals[$les_breuleux_ju][$year] ?? null;
-    }
-    unset($cinemas_mun_totals[$les_breuleux_ju]);
-}
-
-// ♡ merge Porrentruy (BE) (830) into Porrentruy (JU) (6800): Porrentruy (BE) (830) has the values until 1978, Porrentruy (JU) (6800) from 1979.
-$porrentruy_be = 830;
-$porrentruy_ju = 6800;
-
-if (isset($cinemas_mun_totals[$porrentruy_be], $cinemas_mun_totals[$porrentruy_ju])) {
-    foreach ($cinemas_mun_totals[$porrentruy_be] as $year => $value) {
-        $cinemas_mun_totals[$porrentruy_be][$year] = $value ?? $cinemas_mun_totals[$porrentruy_ju][$year] ?? null;
-    }
-    unset($cinemas_mun_totals[$porrentruy_ju]);
-}
-
-// ♡ get coordinates of municipalities via bfs code
-
-// ♡ get data from the csv file
-$handle = fopen('../data/diagram2_coordinates.csv' , 'r');
-$header = array_map('trim', fgetcsv($handle , null , ',' , '"' , ''));
-
-$bfs_codes_and_coordinates = [];
-
-// ♡ combine the header and the values to the above array
-while (($row = fgetcsv($handle , null , ',' , '"' , '"')) !== false) {
-    if ($row[0]==='') {
-        continue;
-    }
-    $bfs_codes_and_coordinates[]=array_combine($header, $row);
-}
-fclose($handle);
 
 
 // ♡ combine coordinates with municipalities
+$bfs_codes_and_coordinates = import_csv_file('../data/diagram2_coordinates.csv');
 
 // ♡ get a list of all names of the municipalities (not necessary but helpful to check)
 $municipality_names = $data2['dataset']['dimension']['Kanton (-) / Gemeinde (......)']['category']['label'];
@@ -162,13 +138,13 @@ $data3 = import_json_files('../data/diagram3.json');
 
 $years3 = $data3['dataset']['dimension']['Jahr']['category']['label'];
 $halls = $data3['dataset']['value'];
-//municipalityIds comes from diagram2
+//municipality_ids comes from diagram2
 
 
 // ♡ PART 1: create array with the bfs code as key and the amount of halls for each year. do this for each municipality.
 $data_diagram3_part1 = [];
 $i1 = 0;
-foreach ($municipalityIds as $municipalityId){
+foreach ($municipality_ids as $municipalityId){
     foreach ($years3 as $year3){
         $data_diagram3_part1[$municipalityId][$year3] = $halls[$i1];
         $i1++;
