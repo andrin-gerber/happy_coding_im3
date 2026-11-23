@@ -2,13 +2,20 @@
 
 header('Content-Type: text/plain; charset=utf-8');
 
+
+// ✧ ─────────── import ────────────── ✧
+
+function import_json_files(string $path):array {
+    $json = file_get_contents($path);
+    return json_decode($json, true);
+}
+
 // ✧ ─────────── diagram 1 ────────────── ✧
 
-// ♡ get total amount of cinemas in switzerland per year
+// ♡ get the data from the json file
+$data1 = import_json_files('../data/diagram1.json');
 
-// ♡ get the data from the file
-$json1 = file_get_contents('../data/diagram1.json');
-$data1 = json_decode($json1, true);
+// ♡ get total amount of cinemas in switzerland per year
 
 // ♡ get the years and the values in an array ready to combine
 $years = $data1['dataset']['dimension']['Jahr']['category']['label'];
@@ -23,8 +30,7 @@ $cinemas_per_year = array_combine($years, $cinema_ch_totals);
 // ♡ get total amount of cinemas per municipality per year
 
 // ♡ get the data from the files
-$json2 = file_get_contents('../data/diagram2.json');
-$data2 = json_decode($json2, true);
+$data2 = import_json_files('../data/diagram2.json');
 
 // ♡ get the years from json2
 $years2 = $data2['dataset']['dimension']['Jahr']['category']['label'];
@@ -97,7 +103,7 @@ if (isset($cinemas_mun_totals[$porrentruy_be], $cinemas_mun_totals[$porrentruy_j
 
 // ♡ get coordinates of municipalities via bfs code
 
-// ♡ get data from files
+// ♡ get data from the csv file
 $handle = fopen('../data/diagram2_coordinates.csv' , 'r');
 $header = array_map('trim', fgetcsv($handle , null , ',' , '"' , ''));
 
@@ -118,9 +124,11 @@ fclose($handle);
 // ♡ get a list of all names of the municipalities (not necessary but helpful to check)
 $municipality_names = $data2['dataset']['dimension']['Kanton (-) / Gemeinde (......)']['category']['label'];
 
-// ♡ combine the two arrays: for each bfs code (from the array with amount of cinemas per municipality) go through every bfs code (from the array with the coordinates). when the bfs codes match, combine the two arrays and add it to a new array.
+// ♡ combine the two arrays: for each bfs code (from the array with amount of cinemas per municipality) go
+// ♡ through every bfs code (from the array with the coordinates). when the bfs codes match, combine the two arrays
+// ♡ and add it to a new array.
+
 $data_diagram2 = [];
-$missing_bfs_codes = []; // <— hier sammeln wir alle fehlenden BFS-Codes
 
 foreach ($cinemas_mun_totals as $bfs => $cinemas_of_municipality) {
 
@@ -142,7 +150,6 @@ foreach ($cinemas_mun_totals as $bfs => $cinemas_of_municipality) {
 
     if (!$found) {
         echo $bfs . " Gemeinde nicht gefunden\n";
-        $missing_bfs_codes[] = $bfs; // <— hier speichern
     }
 }
 
@@ -151,8 +158,7 @@ foreach ($cinemas_mun_totals as $bfs => $cinemas_of_municipality) {
 // ♡ get total amount of halls per municipality in 1966 and 2025
 
 // ♡ get the data from the files
-$json3 = file_get_contents('../data/diagram3.json');
-$data3 = json_decode($json3, true);
+$data3 = import_json_files('../data/diagram3.json');
 
 $years3 = $data3['dataset']['dimension']['Jahr']['category']['label'];
 $halls = $data3['dataset']['value'];
@@ -196,5 +202,4 @@ return [
     'cinemas_per_year' => $cinemas_per_year,
     'data_diagram2'    => $data_diagram2,
     'data_diagram3'    => $data_diagram3,
-    'missing_bfs_codes' => $missing_bfs_codes
 ];
