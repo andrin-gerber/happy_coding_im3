@@ -5,9 +5,29 @@ header('Content-Type: text/plain; charset=utf-8');
 
 // ✧ ─────────── import ────────────── ✧
 
+// ♡ get data from the json files
 function import_json_files(string $path):array {
     $json = file_get_contents($path);
     return json_decode($json, true);
+}
+
+// ♡ get data from the csv file
+
+function import_csv_file(string $path):array {
+    $handle = fopen($path , 'r');
+    $header = array_map('trim', fgetcsv($handle , null , ',' , '"' , ''));
+
+    $bfs_codes_and_coordinates = [];
+
+// ♡ combine the header and the values to the above array
+    while (($row = fgetcsv($handle , null , ',' , '"' , '"')) !== false) {
+        if ($row[0]==='') {
+            continue;
+        }
+        $bfs_codes_and_coordinates[]=array_combine($header, $row);
+    }
+    return $bfs_codes_and_coordinates;
+    fclose($handle);
 }
 
 // ✧ ─────────── diagram 1 ────────────── ✧
@@ -39,13 +59,13 @@ $years2 = $data2['dataset']['dimension']['Jahr']['category']['label'];
 $values = $data2['dataset']['value'];
 
 // ♡ get all the bfs codes of the municipalities. flip the array so the bfs codes are the values instead of the keys
-$municipalityIndex = $data2['dataset']['dimension']['Kanton (-) / Gemeinde (......)']['category']['index'];
-$municipalityIds = array_keys($municipalityIndex);
+$municipality_index = $data2['dataset']['dimension']['Kanton (-) / Gemeinde (......)']['category']['index'];
+$municipality_ids = array_keys($municipality_index);
 
 // ♡ create new array with bfs code -> the array contains the amount of cinemas in each municipality for every year
 $cinemas_mun_totals = [];
 $i = 0;
-foreach ($municipalityIds as $gdenr) {
+foreach ($municipality_ids as $gdenr) {
 
     foreach ($years2 as $year) {
         $cinemas_mun_totals[$gdenr][$year] = $values[$i]; //nimm jedi gmeind, gang jedes jahr dure und mach en neue array für die gmeint mit de bfs nummere und em jahr und füeg det d azahl kinos wos i dem jahr i dere gmeind ge het i, das isch de "values", und gang alli values dure drum i++. zB: nimm adliswil bzw de bfs code devo - was i dem fall 131 isch, denn gang is jahr 1966, erstell en array mit de azahl kinos wos denn in adliswil ge het, indem du de value 0 (i=0) nimmsch. denn gang is nöchste jahr und nimm de nöchst value (i=1)
@@ -55,7 +75,7 @@ foreach ($municipalityIds as $gdenr) {
 
 $cinemas_mun_totals_unfused = $cinemas_mun_totals; //for diagramm 3 -> get the amount of cinemas per year per municipality
 
-//Combine the municipality entries of the municipalities that originally belonged to Bern and later merged into the canton of Jura.
+// ♡ combine the municipality entries of the municipalities that originally belonged to Bern and later merged into the canton of Jura.
 
 $merges = [
     467 => 6711,   // Delémont
@@ -73,25 +93,9 @@ foreach ($merges as $be => $ju) {
     }
 }
 
-// ♡ get coordinates of municipalities via bfs code
-
-// ♡ get data from the csv file
-$handle = fopen('../data/diagram2_coordinates.csv' , 'r');
-$header = array_map('trim', fgetcsv($handle , null , ',' , '"' , ''));
-
-$bfs_codes_and_coordinates = [];
-
-// ♡ combine the header and the values to the above array
-while (($row = fgetcsv($handle , null , ',' , '"' , '"')) !== false) {
-    if ($row[0]==='') {
-        continue;
-    }
-    $bfs_codes_and_coordinates[]=array_combine($header, $row);
-}
-fclose($handle);
-
 
 // ♡ combine coordinates with municipalities
+$bfs_codes_and_coordinates = import_csv_file('../data/diagram2_coordinates.csv');
 
 // ♡ get a list of all names of the municipalities (not necessary but helpful to check)
 $municipality_names = $data2['dataset']['dimension']['Kanton (-) / Gemeinde (......)']['category']['label'];
@@ -134,13 +138,13 @@ $data3 = import_json_files('../data/diagram3.json');
 
 $years3 = $data3['dataset']['dimension']['Jahr']['category']['label'];
 $halls = $data3['dataset']['value'];
-//municipalityIds comes from diagram2
+//municipality_ids comes from diagram2
 
 
 // ♡ PART 1: create array with the bfs code as key and the amount of halls for each year. do this for each municipality.
 $data_diagram3_part1 = [];
 $i1 = 0;
-foreach ($municipalityIds as $municipalityId){
+foreach ($municipality_ids as $municipalityId){
     foreach ($years3 as $year3){
         $data_diagram3_part1[$municipalityId][$year3] = $halls[$i1];
         $i1++;
