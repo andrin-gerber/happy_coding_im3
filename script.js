@@ -845,7 +845,7 @@ function createScatterChart(diagram3) {
         "cinema_mun_total_1966"
     );
 
-    
+
 
     // 2025
     const points2025 = groupScatterPoints(
