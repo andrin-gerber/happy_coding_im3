@@ -35,18 +35,19 @@ Learnings
 
 Schwierigkeiten
 
-    - anfangs: die daten im json verstehen. was ist was und wie wandelt man es um?  
-    - Wir haben bemerkt, dass einige Gemeinden fusioniert wurden und daher nicht alle Daten (korrekt) angezeigt werden. Dafür mussten wir manuell eine lösung finden und das Problem mussten wir manuell beheben.
+    - Zu Beginn des Projekts waren wir etwas verloren mit den JSON-Dateien. Es dauerte etwas, um zu verstehen, welche Daten vorhanden sind und wie man diese lesen muss.  
+    - Für einen Teil der Untersuchung wurde die Anzahl Kinos pro Gemeinde pro Jahr analysiert. Während des Projekts haben wir bemerkt, dass 1979 der Kanton Jura gegründet wurde und in diesem Rahmen sind einige Gemeinden vom Kanton Bern in den Kanton Jura übergegangen. Diese Gemeinden existierten im Datensatz deshalb zweifach, aber jeweils nur mit einem Teil der Daten. Dieses Problem mussten wir manuell beheben und die zwei Gemeinden (BE und JU) zu einer zusammenführen.
     - FRONTEND?
-    - Welche Darstellungsform eignet sich für welches Diagramm? Wie verändert sich die Aussage / Fookus
+    - Eine weitere Herausforderung war es, die passenden Darstellungsformen für unsere Daten zu finden, sodass die Diagramme aussagekräftig und leicht verständlich, aber trotzdem vollständig und umfänglich sind.
 
 Benutzte Ressourcen
     Backend:
-    - Bundesamt für Statistik ADD LINKS
-    - KI zur Fehlerbehebung und Optimierung des Codes
+    - Alle Daten zur Kinoinfrastruktur in der Schweiz stammen vom Bundesamt für Statistik ("Kinoinfrastruktur nach Gemeinde und Kinotyp"): https://statistik.admin.ch/de/asset/36476430 (JSON: https://www.pxweb.bfs.admin.ch/api/v1/de/px-x-1602010000_101/px-x-1602010000_101.px)
+    - Für die Darstellung der Gemeinden auf der Karte waren die Koordinaten jeder Gemeinde nötig. Auch diese bezogen wir vom Bundesamt für Statistik: https://www.agvchapp.bfs.admin.ch/de/kennzahlen/results?SnapshotDate=01.01.2026&Unit=Communes&IncCentroid=True 
+    - Zur Fehlerbehebung und Optimierung des Codes wurde KI verwendet (Copilot, Claude AI).
     
     Frontend:
-    - ADD
+    - ...
     - KI...
 
 Screenshot
