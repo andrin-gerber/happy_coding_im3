@@ -1,17 +1,12 @@
 const MAP_POINT_SIZE = {
     desktop: {
-        base: 4,
-        multiplier: 2,
-        max: 18
+        multiplier: 5
     },
 
     mobile: {
-        base: 2,
-        multiplier: 1,
-        max: 7
+        multiplier: 2.5
     }
 };
-
 
 function getMapPointRadius(count) {
     const mobile =
@@ -21,14 +16,25 @@ function getMapPointRadius(count) {
         ? MAP_POINT_SIZE.mobile
         : MAP_POINT_SIZE.desktop;
 
-    return Math.min(
-        settings.base +
-        count * settings.multiplier,
-
-        settings.max
-    );
+    return Math.sqrt(count) * settings.multiplier;
 }
 
+function getMapPointColor(count) {
+
+    const maxCount = 20;
+    const intensity = 0.65;
+
+    const factor = Math.min(
+        Math.max((count - 1) / (maxCount - 1), 0),
+        1
+    ) * intensity;
+
+    const red = Math.round(255 - 55 * factor);
+    const green = Math.round(255 - 210 * factor);
+    const blue = Math.round(255 - 210 * factor);
+
+    return `rgb(${red}, ${green}, ${blue})`;
+}
 
 
 async function createCinemaMap(diagram2) {
@@ -231,6 +237,7 @@ async function createCinemaMap(diagram2) {
 
             // Grössere Anzahl Kinos = grösserer Kreis
             const radius = getMapPointRadius(count);
+            const pointColor = getMapPointColor(count);
 
 
 
@@ -241,11 +248,11 @@ async function createCinemaMap(diagram2) {
 
                     radius: radius,
 
-                    color: "#ffffff",
+                    color: pointColor,
                     weight: 1,
                     opacity: 1,
 
-                    fillColor: "#ffffff",
+                    fillColor: pointColor,
                     fillOpacity: 0.55
                 }
             );

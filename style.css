@@ -1190,3 +1190,131 @@ body {
 .chart-page-header h2 {
     margin: 0;
 }
+
+
+
+/* =========================================
+   DIAGRAMM – HISTORISCHE MEILENSTEINE
+   ========================================= */
+
+.cinema-event-tooltip {
+    position: absolute;
+    z-index: 10;
+
+    display: none;
+
+    width: 280px;
+    max-width: 90%;
+
+    padding: 0.9rem 1rem;
+
+    background: #161616;
+    color: #ffffff;
+
+    border: 1px solid #444444;
+    border-left: 3px solid darkred;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+
+    font-size: 0.8rem;
+    line-height: 1.5;
+
+    pointer-events: none;
+}
+
+.cinema-event-tooltip strong {
+    display: block;
+
+    margin-bottom: 0.5rem;
+
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    color: #ffffff;
+}
+
+.cinema-event-tooltip p {
+    margin: 0;
+    color: #cccccc;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+    .cinema-event-tooltip {
+        width: 220px;
+        padding: 0.7rem;
+
+        font-size: 0.75rem;
+    }
+
+    .cinema-event-tooltip strong {
+        font-size: 0.8rem;
+    }
+}
+
+
+
+/* =========================================
+   MOBILE – DIAGRAMME UND TITEL
+   ========================================= */
+
+@media (max-width: 700px) {
+
+    .slide--chart,
+    .slide--map,
+    .slide--scatter {
+        display: flex;
+        flex-direction: column;
+
+        padding: 1.25rem 6% 18vh;
+
+        overflow: hidden;
+    }
+
+    /* Titel */
+    .chart-page-header {
+        position: relative;
+
+        width: 100%;
+        flex-shrink: 0;
+
+        padding: 0;
+        margin-bottom: 1.5rem;
+
+        text-align: center;
+    }
+
+    .chart-page-header h2 {
+        font-size: clamp(1.1rem, 5vw, 1.6rem);
+        line-height: 1.25;
+    }
+
+    /* Diagramm und Beschreibung */
+    .slide--chart .split-layout,
+    .slide--map .split-layout,
+    .slide--scatter .split-layout {
+        position: relative;
+        inset: auto;
+
+        flex: 1 1 0;
+        min-height: 0;
+        width: 100%;
+
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto auto;
+
+        align-content: start;
+        gap: 1.5rem;
+
+        overflow-y: auto;
+    }
+
+    /* Höhe der Visualisierungen */
+    .slide--chart .split-visual,
+    .slide--map .split-visual,
+    .slide--scatter .split-visual {
+        height: clamp(18rem, 42vh, 28rem);
+    }
+}

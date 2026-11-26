@@ -65,7 +65,40 @@ function goToSlide(index) {
     });
 
     previousButton.disabled = activeSlide === ABOUT_SLIDE_INDEX;
-    nextButton.disabled = activeSlide === slides.length - 1;
+    const isLastSlide = activeSlide === slides.length - 1;
+
+    nextButton.disabled = false;
+
+    nextButton.textContent = isLastSlide
+        ? "Zurück zum Anfang"
+        : "Weiter →";
+
+    nextButton.setAttribute(
+        "aria-label",
+        isLastSlide
+            ? "Zurück zum Anfang"
+            : "Nächste Seite"
+    );
+
+// Zurückbutton auf der Autorenseite ausblenden
+    previousButton.style.visibility =
+        activeSlide === ABOUT_SLIDE_INDEX
+            ? "hidden"
+            : "visible";
+
+// Buttontext abhängig von der Seite ändern
+    previousButton.textContent =
+        activeSlide === INTRO_SLIDE_INDEX
+            ? "Über das Projekt"
+            : "← Zurück";
+
+// Barrierefreiheit
+    previousButton.setAttribute(
+        "aria-label",
+        activeSlide === INTRO_SLIDE_INDEX
+            ? "Über das Projekt"
+            : "Vorherige Seite"
+    );
 
     if (activeSlide === ABOUT_SLIDE_INDEX) {
         counter.textContent = "Über uns";
@@ -92,7 +125,18 @@ previousButton.addEventListener("click", () => {
 });
 
 nextButton.addEventListener("click", () => {
-    goToSlide(activeSlide + 1);
+
+    if (activeSlide === slides.length - 1) {
+
+        // Zurück zur Titelseite
+        goToSlide(INTRO_SLIDE_INDEX);
+
+    } else {
+
+        // Normaler Seitenwechsel
+        goToSlide(activeSlide + 1);
+    }
+
 });
 
 // Optional: Navigation über die Pfeiltasten.
@@ -609,6 +653,257 @@ let cinemaChart = null;
 let scatterChart = null;
 
 
+const CINEMA_EVENTS = [
+    {
+        year: 1968,
+        label: "Fernsehen",
+        description:
+            "1968 wurde in der Schweiz das Farbfernsehen eingeführt. Das Fernsehen machte die Unterhaltung zu Hause zunehmend attraktiver und stellte eine Konkurrenz zum Kino dar."
+    },
+    {
+        year: 1980,
+        label: "VHS / DVD",
+        description:
+            "Mit der Verbreitung von Videokassetten und später DVDs konnten Filme unabhängig vom Kinoprogramm zu Hause angesehen werden. Dadurch entstand eine zusätzliche Konkurrenz zum klassischen Kinobesuch."
+    },
+    {
+        year: 1995,
+        label: "Multiplex-Boom",
+        description:
+            "Ab den 1990er-Jahren entstanden vermehrt grosse Kinokomplexe mit mehreren Sälen. Die Kinolandschaft entwickelte sich zunehmend weg vom traditionellen Einzelkino."
+    },
+    {
+        year: 2014,
+        label: "Streaming",
+        description:
+            "Mit dem Schweizer Markteintritt von Netflix im Jahr 2014 gewann Streaming weiter an Bedeutung. Filme und Serien wurden zunehmend jederzeit und bequem von zu Hause aus abrufbar."
+    },
+    {
+        year: 2020,
+        label: "Corona",
+        description:
+            "Die Corona-Pandemie führte zu vorübergehenden Kinoschliessungen und massiven Besucherrückgängen. Viele Kinobetriebe gerieten dadurch unter wirtschaftlichen Druck."
+    }
+];
+
+const cinemaTimelinePlugin = {
+    id: "cinemaTimeline",
+
+    // Linien und Beschriftungen zeichnen
+    beforeDatasetsDraw(chart) {
+        const { ctx, chartArea, scales } = chart;
+
+        if (!chartArea) return;
+
+        const { top, bottom, left, right } = chartArea;
+
+        const mobile = window.matchMedia(
+            "(max-width: 700px)"
+        ).matches;
+
+        const fontSize = mobile ? 10 : 12;
+        const rowHeight = fontSize + 9;
+
+        chart.cinemaEventPositions = [];
+
+        ctx.save();
+
+        ctx.font =
+            `${fontSize}px "Nova Flat", sans-serif`;
+
+        ctx.textAlign = "left";
+        ctx.textBaseline = "top";
+
+        const rowEnds = [];
+
+        CINEMA_EVENTS.forEach(event => {
+            const index = chart.data.labels.findIndex(
+                year => Number(year) === event.year
+            );
+
+            if (index === -1) return;
+
+            const x = scales.x.getPixelForValue(index);
+
+            if (x < left || x > right) return;
+
+            // Vertikale dunkelrote Linie
+            // Vertikale dunkelrote Linie
+            ctx.beginPath();
+            ctx.strokeStyle = "#8b0000";
+            ctx.lineWidth = mobile ? 1.5 : 2;
+
+            ctx.setLineDash([4, 5]);
+
+            ctx.moveTo(x, top);
+            ctx.lineTo(x, bottom);
+            ctx.stroke();
+
+            ctx.setLineDash([]);
+
+            // Breite der Beschriftung
+            const textWidth =
+                ctx.measureText(event.label).width;
+
+            // Verhindert abgeschnittene Beschriftungen
+            const labelX = Math.max(
+                left,
+                Math.min(x + 6, right - textWidth - 4)
+            );
+
+            // Verhindert überlappende Beschriftungen
+            let row = 0;
+
+            while (
+                rowEnds[row] !== undefined &&
+                labelX < rowEnds[row] + 8
+                ) {
+                row++;
+            }
+
+            rowEnds[row] = labelX + textWidth;
+
+            const labelY = top + 8 + row * rowHeight;
+
+            // Position für Beschriftung und Hover speichern
+            chart.cinemaEventPositions.push({
+                ...event,
+                x: x,
+                labelX: labelX,
+                labelY: labelY,
+                width: textWidth,
+                height: fontSize
+            });
+        });
+
+        // Beschriftungen über den roten Linien zeichnen
+        chart.cinemaEventPositions.forEach(event => {
+            ctx.fillStyle = "#000000";
+
+            ctx.fillRect(
+                event.labelX - 2,
+                event.labelY - 2,
+                event.width + 4,
+                event.height + 4
+            );
+
+            ctx.fillStyle = "#ffffff";
+
+            ctx.fillText(
+                event.label,
+                event.labelX,
+                event.labelY
+            );
+        });
+
+        ctx.restore();
+    },
+
+    // Maus- und Touch-Interaktion
+    afterEvent(chart, args) {
+        const event = args.event;
+        const positions =
+            chart.cinemaEventPositions || [];
+
+        const container = chart.canvas.parentElement;
+
+        let tooltip = container.querySelector(
+            ".cinema-event-tooltip"
+        );
+
+        if (!tooltip) {
+            tooltip = document.createElement("div");
+            tooltip.className = "cinema-event-tooltip";
+            tooltip.setAttribute("role", "tooltip");
+
+            container.appendChild(tooltip);
+        }
+
+        // Tooltip ausblenden
+        if (
+            event.type === "mouseout" ||
+            event.x == null ||
+            event.y == null
+        ) {
+            tooltip.style.display = "none";
+            chart.canvas.style.cursor = "default";
+            return;
+        }
+
+        // Hover über der Beschriftung
+        const hoveredLabel = positions.find(item =>
+            event.x >= item.labelX - 4 &&
+            event.x <= item.labelX + item.width + 4 &&
+            event.y >= item.labelY - 4 &&
+            event.y <= item.labelY + item.height + 4
+        );
+
+        // Hover über der vertikalen Linie
+        const hoveredLine = positions.find(item =>
+            Math.abs(event.x - item.x) <= 7 &&
+            event.y >= chart.chartArea.top &&
+            event.y <= chart.chartArea.bottom
+        );
+
+        const activeEvent =
+            hoveredLabel || hoveredLine;
+
+        if (!activeEvent) {
+            tooltip.style.display = "none";
+            chart.canvas.style.cursor = "default";
+            return;
+        }
+
+        // Tooltip-Inhalt
+        const heading = document.createElement("strong");
+
+        heading.textContent =
+            `${activeEvent.year} – ${activeEvent.label}`;
+
+        const description = document.createElement("p");
+
+        description.textContent =
+            activeEvent.description;
+
+        tooltip.replaceChildren(heading, description);
+
+        tooltip.style.display = "block";
+        chart.canvas.style.cursor = "pointer";
+
+        // Tooltip innerhalb des Diagramms positionieren
+        let x = event.x + 14;
+        let y = event.y + 14;
+
+        if (x + tooltip.offsetWidth > chart.width - 8) {
+            x = event.x - tooltip.offsetWidth - 14;
+        }
+
+        if (y + tooltip.offsetHeight > chart.height - 8) {
+            y = event.y - tooltip.offsetHeight - 14;
+        }
+
+        tooltip.style.left = `${Math.max(4, x)}px`;
+        tooltip.style.top = `${Math.max(4, y)}px`;
+    },
+
+    // Tooltip bei Grössenänderung ausblenden
+    resize(chart) {
+        const tooltip = chart.canvas.parentElement
+            ?.querySelector(".cinema-event-tooltip");
+
+        if (tooltip) {
+            tooltip.style.display = "none";
+        }
+    },
+
+    // Beim Löschen des Charts aufräumen
+    afterDestroy(chart) {
+        chart.canvas.parentElement
+            ?.querySelector(".cinema-event-tooltip")
+            ?.remove();
+    }
+};
+
 function createCinemaChart(diagram1) {
     const chartCanvas = document.querySelector("#cinemaChart");
 
@@ -623,6 +918,8 @@ function createCinemaChart(diagram1) {
 
     cinemaChart = new Chart(chartCanvas, {
         type: "line",
+
+        plugins: [cinemaTimelinePlugin],
 
         data: {
             labels: diagram1.map(item => item.year),
@@ -812,6 +1109,168 @@ function getScatterRadius(context, hover = false) {
     return radius;
 }
 
+const scatterReferenceLinePlugin = {
+    id: "scatterReferenceLine",
+
+    beforeDatasetsDraw(chart) {
+
+        chart.scatterReferenceLine = null;
+
+        // Nur anzeigen, wenn 1966 sichtbar ist
+        if (!chart.isDatasetVisible(0)) {
+            const tooltip = chart.scatterReferenceTooltip;
+
+            if (tooltip) {
+                tooltip.style.display = "none";
+            }
+
+            return;
+        }
+
+        const { ctx, scales } = chart;
+        const xScale = scales.x;
+        const yScale = scales.y;
+
+        const maxDiagonalValue = Math.min(
+            xScale.max,
+            yScale.max
+        );
+
+        const xStart = xScale.getPixelForValue(0);
+        const yStart = yScale.getPixelForValue(0);
+
+        const xEnd = xScale.getPixelForValue(maxDiagonalValue);
+        const yEnd = yScale.getPixelForValue(maxDiagonalValue);
+
+        // Position der Linie für Hover speichern
+        chart.scatterReferenceLine = {
+            xStart,
+            yStart,
+            xEnd,
+            yEnd
+        };
+
+        // Diagonale Linie zeichnen
+        ctx.save();
+
+        ctx.beginPath();
+        ctx.setLineDash([6, 6]);
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.28)";
+        ctx.lineWidth = 1.5;
+
+        ctx.moveTo(xStart, yStart);
+        ctx.lineTo(xEnd, yEnd);
+        ctx.stroke();
+
+        ctx.restore();
+    },
+
+    // Hover über der diagonalen Linie
+    afterEvent(chart, args) {
+
+        const event = args.event;
+        const line = chart.scatterReferenceLine;
+        const container = chart.canvas.parentElement;
+
+        let tooltip = chart.scatterReferenceTooltip;
+
+        if (!tooltip) {
+            tooltip = document.createElement("div");
+
+            tooltip.className = "cinema-event-tooltip";
+            tooltip.setAttribute("role", "tooltip");
+
+            container.appendChild(tooltip);
+
+            chart.scatterReferenceTooltip = tooltip;
+        }
+
+        // Tooltip ausblenden
+        if (
+            !line ||
+            !chart.isDatasetVisible(0) ||
+            event.type === "mouseout" ||
+            event.x == null ||
+            event.y == null ||
+            !args.inChartArea
+        ) {
+            tooltip.style.display = "none";
+            return;
+        }
+
+        // Abstand zwischen Maus und diagonaler Linie
+        const dx = line.xEnd - line.xStart;
+        const dy = line.yEnd - line.yStart;
+
+        const lengthSquared = dx * dx + dy * dy;
+
+        if (lengthSquared === 0) {
+            tooltip.style.display = "none";
+            return;
+        }
+
+        const t = Math.max(0, Math.min(1,
+            (
+                (event.x - line.xStart) * dx +
+                (event.y - line.yStart) * dy
+            ) / lengthSquared
+        ));
+
+        const nearestX = line.xStart + t * dx;
+        const nearestY = line.yStart + t * dy;
+
+        const distance = Math.hypot(
+            event.x - nearestX,
+            event.y - nearestY
+        );
+
+        // Hover-Toleranz: 8 Pixel
+        // Datenpunkte behalten ihren eigenen Tooltip
+        if (
+            distance > 8 ||
+            chart.getActiveElements().length > 0
+        ) {
+            tooltip.style.display = "none";
+            return;
+        }
+
+        // Beschreibung
+        tooltip.innerHTML = `
+            <strong>1 Kino = 1 Saal</strong>
+            <p>
+                1966 entsprach ein Kino häufig einem
+                einzelnen Kinosaal. Dieses Kinomodell war damals verbreitet.
+            </p>
+        `;
+
+        tooltip.style.display = "block";
+
+        // Tooltip positionieren
+        let x = event.x + 14;
+        let y = event.y + 14;
+
+        if (x + tooltip.offsetWidth > chart.width - 8) {
+            x = event.x - tooltip.offsetWidth - 14;
+        }
+
+        if (y + tooltip.offsetHeight > chart.height - 8) {
+            y = event.y - tooltip.offsetHeight - 14;
+        }
+
+        tooltip.style.left = `${Math.max(4, x)}px`;
+        tooltip.style.top = `${Math.max(4, y)}px`;
+    },
+
+    resize(chart) {
+        if (chart.scatterReferenceTooltip) {
+            chart.scatterReferenceTooltip.style.display = "none";
+        }
+    },
+
+    beforeDestroy(chart) {
+        chart.scatterReferenceTooltip?.remove();
+    }
+};
 function createScatterChart(diagram3) {
     const scatterCanvas = document.querySelector("#scatterChart");
 
@@ -856,6 +1315,8 @@ function createScatterChart(diagram3) {
 
     scatterChart = new Chart(scatterCanvas, {
         type: "scatter",
+
+        plugins: [scatterReferenceLinePlugin],
 
         data: {
             datasets: [
